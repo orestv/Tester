@@ -31,6 +31,10 @@ st.close();
     </head>
     <body>
         <h1>Завантаження питань до теми <%=topicName%></h1>
+        <form action="QuestionsUpload" enctype="multipart/form-data" method="post">
+            <input type="file"/>
+            <input type="submit"/>
+        </form>
     </body>
 </html>
 <%
