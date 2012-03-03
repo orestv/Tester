@@ -11,6 +11,7 @@ import java.util.LinkedList;
  * @author seth
  */
 public class Test {
+    private int questionSequenceId = 0;
     private LinkedList<Integer> questionIds = new LinkedList<Integer>();
     private int currentIndex = 0;
 
@@ -34,9 +35,18 @@ public class Test {
     
     public void clear() {
        getQuestionIds().clear();
+       currentIndex = 0;
     }
     
     public boolean isLast() {
         return questionIds.size() == currentIndex + 1;
+    }
+
+    public int getQuestionSequenceId() {
+        return questionSequenceId;
+    }
+
+    public void setQuestionSequenceId(int questionSequenceId) {
+        this.questionSequenceId = questionSequenceId;
     }
 }

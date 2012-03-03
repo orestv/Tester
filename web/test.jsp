@@ -18,9 +18,12 @@
 int testId = Integer.parseInt(request.getParameter("t"));
 question.setTestId(testId);
 Connection cn = DBUtils.conn();
-PreparedStatement st = cn.prepareStatement("SELECT question_id FROM student_question "
-        + "WHERE test_id = ? AND (student_id = ? OR ISNULL(student_id) = 1)"
-        + "ORDER BY \"order\";");
+String sQuery = "SELECT question_id FROM question_sequence qs "
+        + "INNER JOIN question_sequence_questions qsq "
+        + "ON qs.id = qsq.sequence_id "
+        + "WHERE qs.test_id = ? AND (qs.student_id = ? OR ISNULL(qs.student_id) = 1) "
+        + "ORDER BY \"qsq.order\" ASC;";
+PreparedStatement st = cn.prepareStatement(sQuery);
 st.setInt(1, testId);
 st.setInt(2, user.getId());
 ResultSet rs = st.executeQuery();

@@ -45,7 +45,10 @@ if (st != null)
     <%if (!userNotFound) {%>
         <h1>Доброго дня, <%=user.getFirstname()%>!</h1>
         <%
-        st = cn.prepareStatement("SELECT id, topic FROM test WHERE started = 1");
+        st = cn.prepareStatement("SELECT test.id, test.name AS test_name, "
+                + "topic.name AS topic_name FROM test "
+                + "INNER JOIN test_topics tt ON test.id = tt.test_id "
+                + "INNER JOIN topic ON tt.topic_id = topic.id");
         rs = st.executeQuery();
         boolean testsAvailable = false;
         %>
@@ -53,7 +56,7 @@ if (st != null)
         while (rs.next()) {
             testsAvailable = true;
             %>
-            <li><a href="test.jsp?t=<%=rs.getInt("id")%>"><%=rs.getString("topic")%></a></li>
+            <li><a href="test.jsp?t=<%=rs.getInt("id")%>"><%=rs.getString("test_name")%></a></li>
             <%
         }
         %>
