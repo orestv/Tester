@@ -69,13 +69,14 @@ public class Question {
     
     public void fill() throws SQLException {
         Connection cn = DBUtils.conn();
-        PreparedStatement st = cn.prepareStatement("SELECT text, comment "
+        PreparedStatement st = cn.prepareStatement("SELECT text, comment, multiselect "
                 + "FROM question WHERE id = ?");
         st.setInt(1, id);
         ResultSet rs = st.executeQuery();
         if (rs.next()) {
             setText(rs.getString("text"));
             setComment(rs.getString("comment"));
+            multiChoice = rs.getBoolean("multiselect");
         }
         if (rs != null)
             rs.close();
@@ -86,16 +87,12 @@ public class Question {
         st.setInt(1, id);
         rs = st.executeQuery();
         answers = new LinkedList<Answer>();
-        int correctAnswerCount = 0;
         while (rs.next()) {
             int ansId = rs.getInt("id");
             String ansText = rs.getString("text");
             boolean ansCorrect = rs.getBoolean("correct");
-            if (ansCorrect)
-                correctAnswerCount++;
             answers.add(new Answer(ansId, ansText, ansCorrect));
         }
-        multiChoice = (correctAnswerCount > 1);
         if (rs != null)
             rs.close();
         if (st != null)
