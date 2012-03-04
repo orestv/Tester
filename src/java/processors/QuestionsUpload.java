@@ -42,9 +42,9 @@ public class QuestionsUpload extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+	int topicId = -1;
         try {
             String questionList = null;
-            int topicId = -1;
             for (Part p : request.getParts()) {
                 String value = readStream(p.getInputStream());
                 if (p.getName().equals("questionListFile")) {
@@ -58,7 +58,8 @@ public class QuestionsUpload extends HttpServlet {
         } catch (Exception ex) {
             out.println(ex.getMessage());
         } finally {
-            out.close();
+	    response.sendRedirect("question_list.jsp?topic=" + Integer.toString(topicId));
+            out.close();	    
         }
     }
 

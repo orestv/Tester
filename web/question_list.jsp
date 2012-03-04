@@ -33,7 +33,7 @@ if (topicId != -1) {
 }
 String sql = "SELECT q.id AS question_id, q.text AS question_text, q.comment, "
 	+ "a.id AS answer_id, a.text AS answer_text, a.correct "
-	+ "FROM question q INNER JOIN answer a ON q.id = a.question_id ";
+	+ "FROM question q LEFT OUTER JOIN answer a ON q.id = a.question_id ";
 if (topicId != -1)
     sql += "WHERE q.topic_id = ?;";
 PreparedStatement st = cn.prepareStatement(sql);
@@ -70,7 +70,7 @@ st.close();
 	<%
 	for (Question question : questions) {
 	    %>
-	    <h2><%=question.getText()%> </h2>
+	    <h2><%=question.getText()%> <a href="QuestionDelete?qid=<%=question.getId()%>"><img src="images/delete.ico"/></a></h2>
 	    <ul>
 	    <%
 	    for (Answer a : question.getAnswers()) {
