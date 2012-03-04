@@ -64,29 +64,51 @@ st.close();
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Питання</title>
+	<style>
+	    table {
+		font-size: 12px;
+		border: 1px solid black;
+	    }
+	    td {
+		border: 1px solid black;
+	    }
+	</style>
     </head>
     <body>
         <h1><%=title%></h1>
+	    <table>
 	<%
 	for (Question question : questions) {
 	    %>
-	    <h2><%=question.getText()%> <a href="QuestionDelete?qid=<%=question.getId()%>"><img src="images/delete.ico"/></a></h2>
-	    <ul>
-	    <%
-	    for (Answer a : question.getAnswers()) {
-		%>
-		<li><%=a.getText()%></li>
-		<%
-	    }
-	    %>
-	    </ul>
-	    <%if (question.getComment() != null && !question.getComment().isEmpty()) {%>
-	    <i>(<%=question.getComment()%>)</i>
-	    <%}%>
-	    <br/>
+		<tr>
+		    <td>
+			<h3><%=question.getText()%></h3>
+		    </td>
+		    <td>
+			<ul>
+			<%
+			for (Answer a : question.getAnswers()) {
+			    %>
+			    <li><%=a.getText()%></li>
+			    <%
+			}
+			%>
+			</ul>
+		    </td>
+		    <td>
+			<%if (question.getComment() != null && !question.getComment().isEmpty()) {%>
+			<i>(<%=question.getComment()%>)</i>
+			<%}%>
+		    </td>
+		    <td>
+			<a href="question_edit.jsp?qid=<%=question.getId()%>"><img src="images/modify.ico"/></a>
+			<a href="QuestionDelete?qid=<%=question.getId()%>"><img src="images/delete.ico"/></a>
+		    </td>	
+		</tr>
 	    <%
 	}
 	%>
+	    </table>
     </body>
 </html>
 
