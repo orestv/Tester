@@ -4,10 +4,16 @@
  */
 package processors;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.mysql.jdbc.Statement;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +25,8 @@ import javax.servlet.http.Part;
  * @author seth
  */
 public class QuestionsUpload extends HttpServlet {
+    private final String REGEX_NEWLINE = "\\r?\\n|\\r";
+    private final String REGEX_DOUBLE_NEWLINE = "(\\r?\\n|\\r){2}";
 
     /**
      * Processes requests for both HTTP
@@ -34,12 +42,98 @@ public class QuestionsUpload extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        try {   
-            
+        try {
+            String questionList = null;
+            int topicId = -1;
+            for (Part p : request.getParts()) {
+                String value = readStream(p.getInputStream());
+                if (p.getName().equals("questionListFile")) {
+                    questionList = value;
+                } else if (p.getName().equals("topicId")) {
+                    topicId = Integer.parseInt(value);
+                }
+            }
+            if (questionList != null && topicId > 0)
+                addQuestions(topicId, questionList);
         } catch (Exception ex) {
             out.println(ex.getMessage());
-        }finally {            
+        } finally {
             out.close();
+        }
+    }
+
+    private String readStream(InputStream strm) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader rdr = new BufferedReader(new InputStreamReader(strm, "UTF-8"));
+        char[] buf = new char[2048];
+        for (int length = 0; (length = rdr.read(buf)) > 0;) {
+            sb.append(buf, 0, length);
+        }
+        rdr.close();
+        return sb.toString();
+    }
+
+    private void addQuestions(int topicId, String questionList) throws SQLException {
+        Connection cn = dbutils.DBUtils.conn();
+        
+        String[] questionBlocks = questionList.split("(\\r?\\n|\\r){2}");
+        for (String s : questionBlocks)
+            addQuestion(topicId, s, cn);
+        
+        cn.close();
+    }
+    
+    private void addQuestion(int topicId, String questionBlock, Connection cn) {
+        String[] lines = questionBlock.split(REGEX_NEWLINE);
+        String question = lines[0];
+        String comment = null;
+        boolean hasComment = (lines[lines.length-1].startsWith("//"));
+        boolean isMultiSelect = false;
+        int correctQuestionCount = 0;        
+        String[] answers = Arrays.copyOfRange(lines, 1, lines.length-(hasComment ? 1 : 0));
+        if (hasComment)
+            comment = lines[lines.length-1].substring(2);
+        
+        for (int i = 0; i < answers.length; i++) {
+            String answer = answers[i];
+            if (answer.startsWith("*"))
+                correctQuestionCount++;
+            if (correctQuestionCount > 1) {
+                isMultiSelect = true;
+                break;
+            }
+        }
+        try {
+            PreparedStatement stQuestion = cn.prepareStatement("INSERT INTO question "
+                    + "(topic_id, text, comment, multiselect) "
+                    + "VALUES (?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+            stQuestion.setInt(1, topicId);
+            stQuestion.setString(2, question);
+            stQuestion.setString(3, comment);
+            stQuestion.setBoolean(4, isMultiSelect);
+            stQuestion.executeUpdate();
+	    ResultSet rs = stQuestion.getGeneratedKeys();
+	    rs.next();
+	    int questionId = rs.getInt(1);
+            
+            PreparedStatement stAnswer = cn.prepareStatement("INSERT INTO answer "
+                    + "(question_id, text, correct) "
+                    + "VALUES (?, ?, ?);");
+            for (int i = 0; i < answers.length; i++) {
+                String answer = answers[i];
+                boolean isCorrect = answer.startsWith("*");
+                if (isCorrect)
+                    answer = answer.substring(1);
+                stAnswer.setInt(1, questionId);
+                stAnswer.setString(2, answer);
+                stAnswer.setBoolean(3, isCorrect);
+                stAnswer.execute();
+            }
+	    stAnswer.close();
+	    stQuestion.close();
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(QuestionsUpload.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

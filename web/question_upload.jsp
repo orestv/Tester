@@ -6,7 +6,13 @@
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
+<jsp:useBean class="processors.Admin" id="admin" scope="session"/>
+<jsp:setProperty name="admin" property="*"/>
 <%
+if (!admin.isLoggedIn()) {
+    response.sendRedirect("admin.jsp");
+    return;
+}
 int topicId = Integer.parseInt(request.getParameter("topic"));
 Connection cn = dbutils.DBUtils.conn();
 PreparedStatement st = cn.prepareStatement("SELECT name FROM topic WHERE id = ?");
@@ -32,7 +38,8 @@ st.close();
     <body>
         <h1>Завантаження питань до теми <%=topicName%></h1>
         <form action="QuestionsUpload" enctype="multipart/form-data" method="post">
-            <input type="file"/>
+            <input type="file" name="questionListFile"/>
+            <input type="hidden" name="topicId" value="<%=topicId%>"/>
             <input type="submit"/>
         </form>
     </body>

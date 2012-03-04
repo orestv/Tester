@@ -54,8 +54,8 @@ Connection cn = dbutils.DBUtils.conn();
             %>
                 <tr>
                     <td><%=name%></td>
-                    <td><%=questionCount%> <a href><img src="images/add.ico" width="16"/></a>
-                        <a href><img src="images/delete.ico" width="16"/></a>
+                    <td><%=questionCount%>
+                        <a href="question_list.jsp?topic=<%=id%>"><img src="images/modify.ico" width="16"/></a>
                         <a href="question_upload.jsp?topic=<%=id%>"><img src="images/upload.ico" width="16"/></a>
                     </td>
                     <td>                        

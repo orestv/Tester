@@ -17,7 +17,7 @@ import java.util.LinkedList;
  */
 public class Question {
     
-    public class Answer {
+    public static class Answer {
         private int id;
         private String text;
         private boolean correct;
@@ -57,7 +57,7 @@ public class Question {
     private int testId;
     private String text;
     private String comment;
-    private LinkedList<Answer> answers;
+    private LinkedList<Answer> answers = new LinkedList<Answer>();
     private boolean multiChoice;
 
     public Question() {
