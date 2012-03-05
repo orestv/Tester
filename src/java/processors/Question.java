@@ -54,7 +54,7 @@ public class Question {
     }
 
     private int id;
-    private int testId;
+    private int topicId;
     private String text;
     private String comment;
     private LinkedList<Answer> answers = new LinkedList<Answer>();
@@ -69,13 +69,14 @@ public class Question {
     
     public void fill() throws SQLException {
         Connection cn = DBUtils.conn();
-        PreparedStatement st = cn.prepareStatement("SELECT text, comment, multiselect "
+        PreparedStatement st = cn.prepareStatement("SELECT text, topic_id, comment, multiselect "
                 + "FROM question WHERE id = ?");
         st.setInt(1, id);
         ResultSet rs = st.executeQuery();
         if (rs.next()) {
             setText(rs.getString("text"));
             setComment(rs.getString("comment"));
+	    setTopicId(rs.getInt("topic_id"));
             multiChoice = rs.getBoolean("multiselect");
         }
         if (rs != null)
@@ -130,12 +131,12 @@ public class Question {
         this.answers = answers;
     }
 
-    public int getTestId() {
-        return testId;
+    public int getTopicId() {
+        return topicId;
     }
 
-    public void setTestId(int testId) {
-        this.testId = testId;
+    public void setTopicId(int topicId) {
+        this.topicId = topicId;
     }
 
     public int getId() {

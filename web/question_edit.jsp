@@ -13,7 +13,7 @@ if (!admin.isLoggedIn()) {
     response.sendRedirect("admin.jsp");
     return;
 }
-String sQuestionId = request.getParameter("qid");
+String sQuestionId = request.getParameter("id");
 int questionId = -1;
 if (sQuestionId != null)
     questionId = Integer.parseInt(sQuestionId);
@@ -44,7 +44,7 @@ question.fill();
 	</script>
     </head>
     <body>
-        <form action="QuestionEdit" method="post">
+        <form action="QuestionEdit" method="post" accept-charset="UTF-8">
 	    <table>
 		<tr>
 		    <td>
@@ -59,7 +59,7 @@ question.fill();
 			Коментар
 		    </td>
 		    <td>
-			<textarea cols="50" rows="5" name="questionComment"><%=question.getComment()%></textarea>
+			<textarea cols="50" rows="5" name="questionComment"><%=question.getComment() != null ? question.getComment() : ""%></textarea>
 		    </td>
 		</tr>
 		<tr>
@@ -73,6 +73,7 @@ question.fill();
 				%>
 				<li>
 				    <input type="text" name="ans_<%=a.getId()%>" value="<%=a.getText()%>"/>
+				    <input type="checkbox" name="ans_<%=a.getId()%>" <%=a.isCorrect() ? "checked" : ""%>/>
 				    <a href><img src="images/delete.ico" width="16"/></a>
 				</li>
 				<%

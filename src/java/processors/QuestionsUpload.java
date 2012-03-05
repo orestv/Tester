@@ -26,7 +26,7 @@ import javax.servlet.http.Part;
  */
 public class QuestionsUpload extends HttpServlet {
     private final String REGEX_NEWLINE = "\\r?\\n|\\r";
-    private final String REGEX_DOUBLE_NEWLINE = "(\\r?\\n|\\r){2}";
+    private final String REGEX_DOUBLE_NEWLINE = "(\\r?\\n|\\r){2,}";
 
     /**
      * Processes requests for both HTTP
@@ -77,7 +77,7 @@ public class QuestionsUpload extends HttpServlet {
     private void addQuestions(int topicId, String questionList) throws SQLException {
         Connection cn = dbutils.DBUtils.conn();
         
-        String[] questionBlocks = questionList.split("(\\r?\\n|\\r){2}");
+        String[] questionBlocks = questionList.split(REGEX_DOUBLE_NEWLINE);
         for (String s : questionBlocks)
             addQuestion(topicId, s, cn);
         

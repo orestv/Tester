@@ -6,7 +6,11 @@ package processors;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author seth
  */
 public class QuestionEdit extends HttpServlet {
+    private PreparedStatement stAddAnswer;
+    private PreparedStatement stUpdateAnswer;
+    private Connection cn;
 
     /**
      * Processes requests for both HTTP
@@ -32,14 +39,41 @@ public class QuestionEdit extends HttpServlet {
 	    throws ServletException, IOException {
 	response.setContentType("text/html;charset=UTF-8");
 	PrintWriter out = response.getWriter();
+	int id = -1;
+	Question q = null;
 	try {
 	    String sQuestionId = request.getParameter("questionId");
-	    String text = request.getParameter("questionText");
-	    String comment = request.getParameter("questionComment");
+	    id = Integer.parseInt(sQuestionId);
+	    q = new Question(id);
+	    q.fill();
+	    String text = ServletUtils.decodeParameter(request.getParameter("questionText"));
+	    String comment = ServletUtils.decodeParameter(request.getParameter("questionComment"));
+	    cn = dbutils.DBUtils.conn();
+	    stAddAnswer = cn.prepareStatement("INSERT INTO answer (question_id, "
+		    + "text, correct) VALUES (?, ?, ?);");
+	    stUpdateAnswer = cn.prepareStatement("UPDATE answer SET text = ?, "
+		    + "correct = ? WHERE id = ?;");
+	    PreparedStatement stUpdateQuestion = cn.prepareStatement("UPDATE question "
+		    + "SET text = ?, comment = ? WHERE id = ?;");
+	    stUpdateQuestion.setString(1, text);
+	    stUpdateQuestion.setString(2, comment);
+	    stUpdateQuestion.setInt(3, id);
+	    stUpdateQuestion.execute();
+	    
 	    Map<String, String[]> parameterMap = request.getParameterMap();
+	    for (Entry<String, String[]> entry : parameterMap.entrySet()) {
+		String key = entry.getKey();
+		String[] values = entry.getValue();
+	    }
+	} catch (SQLException ex) {
 	} finally {	    
+	    response.sendRedirect("question_list.jsp?topic=" + Integer.toString(q.getTopicId()));
 	    out.close();
 	}
+    }
+    
+    private void addAnswer(String text, boolean isCorrect) {
+	
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -69,19 +69,17 @@ st.close();
 		font-size: 12px;
 		border: 1px solid black;
 	    }
-	    td {
-		border: 1px solid black;
-	    }
 	</style>
     </head>
     <body>
+	<a href="admin_dashboard.jsp">на головну</a>
         <h1><%=title%></h1>
 	    <table>
 	<%
 	for (Question question : questions) {
 	    %>
 		<tr>
-		    <td>
+		    <td width="50%">
 			<h3><%=question.getText()%></h3>
 		    </td>
 		    <td>
@@ -89,7 +87,7 @@ st.close();
 			<%
 			for (Answer a : question.getAnswers()) {
 			    %>
-			    <li><%=a.getText()%></li>
+			    <li <%=a.isCorrect() ? "style=\"color: green;\"" : ""%>><%=a.getText()%></li>
 			    <%
 			}
 			%>
@@ -101,8 +99,8 @@ st.close();
 			<%}%>
 		    </td>
 		    <td>
-			<a href="question_edit.jsp?qid=<%=question.getId()%>"><img src="images/modify.ico"/></a>
-			<a href="QuestionDelete?qid=<%=question.getId()%>"><img src="images/delete.ico"/></a>
+			<a href="question_edit.jsp?id=<%=question.getId()%>"><img src="images/modify.ico"/></a>
+			<a href="QuestionDelete?id=<%=question.getId()%>"><img src="images/delete.ico"/></a>
 		    </td>	
 		</tr>
 	    <%

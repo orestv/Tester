@@ -16,7 +16,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
 int testId = Integer.parseInt(request.getParameter("t"));
-question.setTestId(testId);
 Connection cn = DBUtils.conn();
 String sQuery = "SELECT question_id FROM question_sequence qs "
         + "INNER JOIN question_sequence_questions qsq "

@@ -37,7 +37,7 @@ public class QuestionDelete extends HttpServlet {
 	response.setContentType("text/html;charset=UTF-8");
 	PrintWriter out = response.getWriter();
 	try {
-	    String questionId = request.getParameter("qid");
+	    String questionId = request.getParameter("id");
 	    int id = Integer.parseInt(questionId);
 	    Connection cn = dbutils.DBUtils.conn();
 	    PreparedStatement st = cn.prepareStatement("DELETE FROM question WHERE id = ?");
@@ -49,8 +49,8 @@ public class QuestionDelete extends HttpServlet {
 	    cn.close();
 	} catch (SQLException ex) {
 	    Logger.getLogger(QuestionDelete.class.getName()).log(Level.SEVERE, null, ex);
-	} finally {	    
-	    response.sendRedirect("admin_dashboard.jsp")    ;
+	} finally {
+	    response.sendRedirect(request.getHeader("Referer"));
 	    out.close();
 	}
     }
