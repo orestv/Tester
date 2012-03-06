@@ -14,8 +14,8 @@ import java.util.Properties;
  * @author seth
  */
 public class DBUtils {
-    private static String user = "application";
-    private static String password = "medicine";
+    private static String user = "orestv";
+    private static String password = "fresh590441";
     private static String url = "jdbc:mysql://localhost/tests?useUnicode=yes&characterEncoding=UTF-8";
     
     public static Connection conn() throws SQLException {
