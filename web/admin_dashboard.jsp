@@ -33,7 +33,7 @@ Connection cn = dbutils.DBUtils.conn();
             <table>
                 <tr>
                     <th colspan="99">
-                        Теми <a href><img src="images/add.ico" width="16"/></a>
+                        Теми
                     </th>
                 </tr>
                 <tr>
@@ -46,7 +46,8 @@ Connection cn = dbutils.DBUtils.conn();
             ResultSet rs = st.executeQuery("SELECT t.id, t.name, "
                     + "COUNT(q.id) AS question_count "
                     + "FROM topic t "
-                    + "LEFT OUTER JOIN question q ON t.id = q.topic_id");
+                    + "LEFT OUTER JOIN question q ON t.id = q.topic_id "
+		    + "GROUP BY t.id, t.name;");
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
@@ -60,10 +61,18 @@ Connection cn = dbutils.DBUtils.conn();
                     </td>
                     <td>                        
                         <a href><img src="images/modify.ico" width="16"/></a>
-                        <a href><img src="images/delete.ico" width="16"/></a>
+                        <a onclick="return confirm('Ви впевнені, що бажаєте видалити цю тему?');" href="TopicDelete?id=<%=id%>"><img src="images/delete.ico" width="16"/></a>
                     </td>
                 </tr>
             <%}%>            
+	    <tr>
+		<td colspan="3">
+		    <form action="TopicAdd" method="POST">
+			Назва: <input type="text" name="name"/>
+			<input type="submit" value="Додати тему"/>
+		    </form>
+		</td>
+	    </tr>
             </table>
         </div>
     </body>

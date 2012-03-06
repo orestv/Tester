@@ -12,6 +12,14 @@
         <servlet-name>QuestionEdit</servlet-name>
         <servlet-class>processors.QuestionEdit</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TopicDelete</servlet-name>
+        <servlet-class>processors.TopicDelete</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TopicAdd</servlet-name>
+        <servlet-class>processors.TopicAdd</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>QuestionsUpload</servlet-name>
         <url-pattern>/QuestionsUpload</url-pattern>
@@ -23,6 +31,14 @@
     <servlet-mapping>
         <servlet-name>QuestionEdit</servlet-name>
         <url-pattern>/QuestionEdit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TopicDelete</servlet-name>
+        <url-pattern>/TopicDelete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TopicAdd</servlet-name>
+        <url-pattern>/TopicAdd</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
