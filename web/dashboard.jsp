@@ -5,7 +5,6 @@
 --%>
 <%@page import="Data.User"%>
 <jsp:useBean scope="session" id="user" class="Data.User"/>
-<jsp:setProperty name="user" property="*"/>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Statement"%>

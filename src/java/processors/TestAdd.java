@@ -111,11 +111,11 @@ public class TestAdd extends HttpServlet {
 	PreparedStatement stQuestions = cn.prepareStatement("INSERT INTO question_sequence_questions (sequence_id, question_id, `order`) "
 		+ "SELECT ?, id, @order := @order + 1 AS `order` FROM "
 		    + "( SELECT id FROM question "
-		    + "WHERE topic_id IN (?) ORDER BY RAND() LIMIT ?) "
+		    + "WHERE topic_id IN (" + topicIds + ") ORDER BY RAND() LIMIT ?) "
 		+ "qs, (SELECT @order := 0) o");
 	stQuestions.setInt(1, sequenceId);
-	stQuestions.setString(2, topicIds);
-	stQuestions.setInt(3, questionCount);
+	//stQuestions.setString(2, topicIds);
+	stQuestions.setInt(2, questionCount);
 	stQuestions.executeUpdate();
 	stQuestions.close();
     }

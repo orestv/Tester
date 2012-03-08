@@ -7,9 +7,6 @@
 <jsp:useBean class="Data.User" id="user" scope="session"/>
 <jsp:useBean class="Data.Question" id="question" scope="session"/>
 <jsp:useBean class="Data.Test" scope="session" id="test"/>
-<jsp:setProperty name="user" property="*"/>
-<jsp:setProperty name="question" property="*"/>
-<jsp:setProperty name="test" property="*"/>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
 String controlType = question.isMultiChoice() ? "checkbox" : "radio";

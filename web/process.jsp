@@ -5,10 +5,6 @@
 <jsp:useBean class="Data.Question" id="question" scope="session"/>
 <jsp:useBean class="Data.Test" scope="session" id="test"/>
 <jsp:useBean class="Data.TestAttempt" scope="session" id="testAttempt"/>
-<jsp:setProperty name="user" property="*"/>
-<jsp:setProperty name="question" property="*"/>
-<jsp:setProperty name="test" property="*"/>
-<jsp:setProperty name="testAttempt" property="*"/>
 <%
 String[] answers = request.getParameterValues("answer");
 if (answers == null) {
