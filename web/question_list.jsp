@@ -66,7 +66,7 @@ st.close();
         <title>Питання</title>
 	<style>
 	    table {
-		font-size: 12px;
+		font-size: 13px;
 		border: 1px solid black;
 	    }
 	</style>
@@ -74,13 +74,13 @@ st.close();
     <body>
 	<a href="admin_dashboard.jsp">на головну</a>
         <h1><%=title%></h1>
-	    <table>
+	    <table width="55%">
 	<%
 	for (Question question : questions) {
 	    %>
 		<tr>
 		    <td width="50%">
-			<h3><%=question.getText()%></h3>
+			<%=question.getText()%>
 		    </td>
 		    <td>
 			<ul>
@@ -99,8 +99,8 @@ st.close();
 			<%}%>
 		    </td>
 		    <td>
-			<a href="question_edit.jsp?id=<%=question.getId()%>"><img src="images/modify.ico"/></a>
-			<a href="QuestionDelete?id=<%=question.getId()%>"><img src="images/delete.ico"/></a>
+			<!--<a href="question_edit.jsp?id=<%=question.getId()%>"><img src="images/modify.ico"/></a>-->
+			<a onclick="return confirm('Ви впевнені, що хочете видалити це питання?');"href="QuestionDelete?id=<%=question.getId()%>"><img src="images/delete.ico"/></a>
 		    </td>	
 		</tr>
 	    <%
