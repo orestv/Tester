@@ -20,6 +20,10 @@
         <servlet-name>TopicAdd</servlet-name>
         <servlet-class>processors.TopicAdd</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TestAdd</servlet-name>
+        <servlet-class>processors.TestAdd</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>QuestionsUpload</servlet-name>
         <url-pattern>/QuestionsUpload</url-pattern>
@@ -39,6 +43,10 @@
     <servlet-mapping>
         <servlet-name>TopicAdd</servlet-name>
         <url-pattern>/TopicAdd</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TestAdd</servlet-name>
+        <url-pattern>/TestAdd</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

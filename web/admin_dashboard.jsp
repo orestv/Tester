@@ -5,7 +5,6 @@
 --%>
 
 <%@page import="Data.Topic"%>
-<%@page import="javassist.compiler.ast.Pair"%>
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
@@ -42,7 +41,7 @@
             }
         </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Адміністратор</title>
+        <title>Адміністрування</title>
 	<script>
 	    function testTopicCheckboxChanged(sender, topicQuestionCount) {
 		var questionCountInput = document.getElementById('questionCount');
@@ -99,9 +98,10 @@
         </div>
 	<div>
 	    <h2>Створити тест</h2>		
-	    <form action="TestCreate" method="POST">
-		<input type="radio" name="testType" value="trial"/> Пробний <br/>
-		<input type="radio" name="testType" value="final"/> Контрольний<br/>
+	    <form action="TestAdd" method="POST">
+		Назва тесту: <input type="text" name="name" value="Тест"/><br/>
+		<input type="radio" name="type" value="trial"/> Пробний <br/>
+		<input type="radio" name="type" value="final"/> Контрольний<br/>
 		<h3>Теми:</h3>
 		<ul style="list-style-type: none;">
 		<%
