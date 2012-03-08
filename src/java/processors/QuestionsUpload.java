@@ -87,6 +87,22 @@ public class QuestionsUpload extends HttpServlet {
     private void addQuestion(int topicId, String questionBlock, Connection cn) {
         String[] lines = questionBlock.split(REGEX_NEWLINE);
         String question = lines[0];
+	try {
+	    PreparedStatement stCheckQuestionExistence = cn.prepareStatement("SELECT "
+		    + "CASE WHEN EXISTS (SELECT * FROM question WHERE topic_id = ? AND text = ?) "
+		    + "THEN 1 ELSE 0 END AS questionExists;");
+	    stCheckQuestionExistence.setInt(1, topicId);
+	    stCheckQuestionExistence.setString(2, question);
+	    ResultSet rsQuestionExistence = stCheckQuestionExistence.executeQuery();
+	    rsQuestionExistence.next();
+	    boolean questionExists = rsQuestionExistence.getBoolean("questionExists");
+	    rsQuestionExistence.close();
+	    stCheckQuestionExistence.close();
+	    if (questionExists)
+		return;
+	} catch (SQLException ex) {
+	    Logger.getLogger(QuestionsUpload.class.getName()).log(Level.SEVERE, null, ex);
+	}
         String comment = null;
         boolean hasComment = (lines[lines.length-1].startsWith("//"));
         boolean isMultiSelect = false;
