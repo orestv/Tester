@@ -7,9 +7,9 @@
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="dbutils.DBUtils"%>
-<jsp:useBean class="processors.User" scope="session" id="user"/>
-<jsp:useBean class="processors.Question" scope="session" id="question"/>
-<jsp:useBean class="processors.Test" scope="session" id="test"/>
+<jsp:useBean class="Data.User" scope="session" id="user"/>
+<jsp:useBean class="Data.Question" scope="session" id="question"/>
+<jsp:useBean class="Data.Test" scope="session" id="test"/>
 <jsp:setProperty name="user" property="*"/>
 <jsp:setProperty name="question" property="*"/>
 <jsp:setProperty name="test" property="*"/>

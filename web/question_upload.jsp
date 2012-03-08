@@ -6,7 +6,7 @@
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
-<jsp:useBean class="processors.Admin" id="admin" scope="session"/>
+<jsp:useBean class="Data.Admin" id="admin" scope="session"/>
 <jsp:setProperty name="admin" property="*"/>
 <%
 if (!admin.isLoggedIn()) {

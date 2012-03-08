@@ -4,18 +4,34 @@
     Author     : seth
 --%>
 
+<%@page import="Data.Topic"%>
+<%@page import="javassist.compiler.ast.Pair"%>
+<%@page import="java.util.LinkedList"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.Connection"%>
-<jsp:useBean class="processors.Admin" id="admin" scope="session"/>
+<jsp:useBean class="Data.Admin" id="admin" scope="session"/>
 <jsp:setProperty name="admin" property="*"/>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-if (!admin.isLoggedIn()) {
-    response.sendRedirect("admin.jsp");
-    return;
-}
-Connection cn = dbutils.DBUtils.conn();
+    if (!admin.isLoggedIn()) {
+	response.sendRedirect("admin.jsp");
+	return;
+    }
+    Connection cn = dbutils.DBUtils.conn();
+    Statement st = cn.createStatement();
+    ResultSet rs = st.executeQuery("SELECT t.id, t.name, "
+	    + "COUNT(q.id) AS question_count "
+	    + "FROM topic t "
+	    + "LEFT OUTER JOIN question q ON t.id = q.topic_id "
+	    + "GROUP BY t.id, t.name;");
+    LinkedList<Topic> topics = new LinkedList<Topic>();
+    while (rs.next()) {
+	int id = rs.getInt("id");
+	String name = rs.getString("name");
+	int questionCount = rs.getInt("question_count");
+	topics.add(new Topic(id, name, questionCount));
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -26,14 +42,29 @@ Connection cn = dbutils.DBUtils.conn();
             }
         </style>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Адміністратор</title>
+	<script>
+	    function testTopicCheckboxChanged(sender, topicQuestionCount) {
+		var questionCountInput = document.getElementById('questionCount');
+		var questionCountSpan = document.getElementById('spQuestionCount');
+		var questionCount = new Number(questionCountInput.getAttribute('max'));
+		if (sender.checked)
+		    questionCount += topicQuestionCount;
+		else
+		    questionCount -= topicQuestionCount;
+		questionCountInput.setAttribute('max', questionCount);
+		questionCountSpan.textContent = questionCount;
+		if (Number(questionCountInput.value) > questionCount)
+		    questionCountInput.value = questionCount;
+	    }
+	</script>
     </head>
     <body>
-        <div id="topicList">
+        <div id="topicList" style="border-style: 1px solid black;">
             <table>
                 <tr>
                     <th colspan="99">
-                        Теми
+			Теми
                     </th>
                 </tr>
                 <tr>
@@ -41,43 +72,54 @@ Connection cn = dbutils.DBUtils.conn();
                     <th>Кількість запитань</th>
                     <th>Дії</th>
                 </tr>                
-            <%
-            Statement st = cn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT t.id, t.name, "
-                    + "COUNT(q.id) AS question_count "
-                    + "FROM topic t "
-                    + "LEFT OUTER JOIN question q ON t.id = q.topic_id "
-		    + "GROUP BY t.id, t.name;");
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                int questionCount = rs.getInt("question_count");
-            %>
+		<%
+		for (Topic t : topics) {
+		%>
                 <tr>
-                    <td><%=name%></td>
-                    <td><%=questionCount%>
-                        <a href="question_list.jsp?topic=<%=id%>"><img src="images/modify.ico" width="16"/></a>
-                        <a href="question_upload.jsp?topic=<%=id%>"><img src="images/upload.ico" width="16"/></a>
+                    <td><%=t.getName()%></td>
+                    <td><%=t.getQuestionCount()%>
+                        <a href="question_list.jsp?topic=<%=t.getId()%>"><img src="images/modify.ico" width="16"/></a>
+                        <a href="question_upload.jsp?topic=<%=t.getId()%>"><img src="images/upload.ico" width="16"/></a>
                     </td>
                     <td>                        
                         <a href><img src="images/modify.ico" width="16"/></a>
-                        <a onclick="return confirm('Ви впевнені, що бажаєте видалити цю тему?');" href="TopicDelete?id=<%=id%>"><img src="images/delete.ico" width="16"/></a>
+                        <a onclick="return confirm('Ви впевнені, що бажаєте видалити цю тему?');" href="TopicDelete?id=<%=t.getId()%>"><img src="images/delete.ico" width="16"/></a>
                     </td>
                 </tr>
-            <%}%>            
-	    <tr>
-		<td colspan="3">
-		    <form action="TopicAdd" method="POST">
-			Назва: <input type="text" name="name"/>
-			<input type="submit" value="Додати тему"/>
-		    </form>
-		</td>
-	    </tr>
+		<%}%>            
+		<tr>
+		    <td colspan="3">
+			<form action="TopicAdd" method="POST">
+			    Назва: <input type="text" name="name"/>
+			    <input type="submit" value="Додати тему"/>
+			</form>
+		    </td>
+		</tr>
             </table>
         </div>
+	<div>
+	    <h2>Створити тест</h2>		
+	    <form action="TestCreate" method="POST">
+		<input type="radio" name="testType" value="trial"/> Пробний <br/>
+		<input type="radio" name="testType" value="final"/> Контрольний<br/>
+		<h3>Теми:</h3>
+		<ul style="list-style-type: none;">
+		<%
+		    for (Topic t : topics) {
+			%>
+			<li><input type="checkbox" name="topics" onchange="testTopicCheckboxChanged(this, <%=t.getQuestionCount()%>);" value="<%=t.getId()%>"/> <%=t.getName()%> (<%=t.getQuestionCount()%> питань) </li>
+			<%
+		    }
+		%>
+		</ul>
+		Кількість питань: <input id="questionCount" type="number" name="questionCount" value="0" min="0" max="0"/> (до <span id="spQuestionCount">0</span>)<br/>
+		<input type="submit" value="Створити тест"/>
+	    </form>
+	</div>
     </body>
 </html>
 <%
-if (cn != null)
-    cn.close();
+    if (cn != null) {
+	cn.close();
+    }
 %>

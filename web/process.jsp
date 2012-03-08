@@ -1,9 +1,9 @@
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
-<%@page import="processors.Question"%>
-<jsp:useBean class="processors.User" id="user" scope="session"/>
-<jsp:useBean class="processors.Question" id="question" scope="session"/>
-<jsp:useBean class="processors.Test" scope="session" id="test"/>
+<%@page import="Data.Question"%>
+<jsp:useBean class="Data.User" id="user" scope="session"/>
+<jsp:useBean class="Data.Question" id="question" scope="session"/>
+<jsp:useBean class="Data.Test" scope="session" id="test"/>
 <jsp:setProperty name="user" property="*"/>
 <jsp:setProperty name="question" property="*"/>
 <jsp:setProperty name="test" property="*"/>

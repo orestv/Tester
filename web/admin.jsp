@@ -3,8 +3,8 @@
     Created on : Mar 3, 2012, 2:49:17 PM
     Author     : seth
 --%>
-<%@page import="processors.Admin"%>
-<jsp:useBean class="processors.Admin" id="admin" scope="session"/>
+<%@page import="Data.Admin"%>
+<jsp:useBean class="Data.Admin" id="admin" scope="session"/>
 <jsp:setProperty name="admin" property="*"/>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%

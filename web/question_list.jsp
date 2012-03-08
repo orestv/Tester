@@ -3,13 +3,13 @@
     Created on : Mar 4, 2012, 3:33:28 PM
     Author     : seth
 --%>
-<%@page import="processors.Question"%>
+<%@page import="Data.Question"%>
 <%@page import="java.util.LinkedList"%>
-<%@page import="processors.Question.Answer"%>
+<%@page import="Data.Question.Answer"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
-<jsp:useBean class="processors.Admin" id="admin" scope="session"/>
+<jsp:useBean class="Data.Admin" id="admin" scope="session"/>
 <jsp:setProperty name="admin" property="*"/>
 <%
 if (!admin.isLoggedIn()) {

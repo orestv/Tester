@@ -3,8 +3,8 @@
     Created on : Mar 2, 2012, 8:46:48 PM
     Author     : seth
 --%>
-<%@page import="processors.User"%>
-<jsp:useBean scope="session" id="user" class="processors.User"/>
+<%@page import="Data.User"%>
+<jsp:useBean scope="session" id="user" class="Data.User"/>
 <jsp:setProperty name="user" property="*"/>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>

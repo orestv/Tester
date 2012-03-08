@@ -4,9 +4,9 @@
     Author     : seth
 --%>
 
-<%@page import="processors.Question.Answer"%>
-<%@page import="processors.Question"%>
-<jsp:useBean class="processors.Admin" id="admin" scope="session"/>
+<%@page import="Data.Question.Answer"%>
+<%@page import="Data.Question"%>
+<jsp:useBean class="Data.Admin" id="admin" scope="session"/>
 <jsp:setProperty name="admin" property="*"/>
 <%
 if (!admin.isLoggedIn()) {

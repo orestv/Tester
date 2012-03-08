@@ -1,5 +1,5 @@
-<jsp:useBean id="login" scope="session" class="processors.LoginData"/>
-<jsp:useBean scope="session" id="user" class="processors.User"/>
+<jsp:useBean id="login" scope="session" class="Data.LoginData"/>
+<jsp:useBean scope="session" id="user" class="Data.User"/>
 <jsp:setProperty name="user" property="*"/>
 <jsp:setProperty name="login" property="*"/>
 <html>
