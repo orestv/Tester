@@ -12,7 +12,7 @@ public class User {
     private String firstname;
     private String lastname;
     private String email;
-    private int id;
+    private int id = -1;
 
     public User() {}
     public User(String firstname, String lastname, String email, int id) {

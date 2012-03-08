@@ -3,6 +3,7 @@
     Created on : Mar 2, 2012, 9:43:39 PM
     Author     : seth
 --%>
+<%@page import="java.sql.Statement"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
@@ -10,9 +11,11 @@
 <jsp:useBean class="Data.User" scope="session" id="user"/>
 <jsp:useBean class="Data.Question" scope="session" id="question"/>
 <jsp:useBean class="Data.Test" scope="session" id="test"/>
+<jsp:useBean class="Data.TestAttempt" scope="session" id="testAttempt"/>
 <jsp:setProperty name="user" property="*"/>
 <jsp:setProperty name="question" property="*"/>
 <jsp:setProperty name="test" property="*"/>
+<jsp:setProperty name="testAttempt" property="*"/>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
 int testId = Integer.parseInt(request.getParameter("t"));
@@ -30,6 +33,14 @@ test.clear();
 while (rs.next())
     test.getQuestionIds().add(rs.getInt("question_id"));
 question.setId(test.getCurrentQuestionId());
+PreparedStatement stAttempt = cn.prepareStatement("INSERT INTO test_attempt (student_id, test_id) "
+	+ "VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
+stAttempt.setInt(1, user.getId());
+stAttempt.setInt(2, testId);
+stAttempt.execute();
+ResultSet rsAttempt = stAttempt.getGeneratedKeys();
+rsAttempt.next();
+testAttempt.setId(rsAttempt.getInt(1));
 if (rs != null)
     rs.close();
 if (st != null)
