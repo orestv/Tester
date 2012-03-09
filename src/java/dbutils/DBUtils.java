@@ -7,7 +7,9 @@ package dbutils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -17,6 +19,7 @@ public class DBUtils {
     private static String user = "orestv";
     private static String password = "fresh590441";
     private static String url = "jdbc:mysql://localhost/tests?useUnicode=yes&characterEncoding=UTF-8";
+    private static DateFormat dateFormat;
     
     public static Connection conn() throws SQLException {
         Connection cn;
@@ -25,5 +28,10 @@ public class DBUtils {
         } catch (Exception ex) {}
         cn = DriverManager.getConnection(url, user, password);
         return cn;
+    }
+    public static String format(Date date) {
+	if (dateFormat == null)
+	    dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:m");
+	return dateFormat.format(date);
     }
 }
