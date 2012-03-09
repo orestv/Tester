@@ -15,7 +15,7 @@ Connection cn = dbutils.DBUtils.conn();
 for (String ansId : answers) {
     PreparedStatement st = cn.prepareStatement("INSERT INTO student_answer "
             + "(student_id, test_attempt_id, answer_id) "
-            + "VALUES (?, ?, ?, ?);");
+            + "VALUES (?, ?, ?);");
     st.setInt(1, user.getId());
     st.setInt(2, testAttempt.getId());
     st.setInt(3, Integer.parseInt(ansId));

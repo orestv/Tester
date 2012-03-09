@@ -72,7 +72,16 @@ public class Question {
     private String text;
     private String comment;
     private LinkedList<Answer> answers = new LinkedList<Answer>();
-    private boolean multiChoice;
+    private boolean multiSelect;
+    private float pointsTaken;
+
+    public float getPointsTaken() {
+	return pointsTaken;
+    }
+
+    public void setPointsTaken(float pointsTaken) {
+	this.pointsTaken = pointsTaken;
+    }
 
     public Question() {
     }
@@ -85,7 +94,7 @@ public class Question {
 	this.id = id;
 	this.text = text;
 	this.comment = comment;
-	this.multiChoice = multiselect;
+	this.multiSelect = multiselect;
     }
     
     public void fill() throws SQLException {
@@ -98,7 +107,7 @@ public class Question {
             setText(rs.getString("text"));
             setComment(rs.getString("comment"));
 	    setTopicId(rs.getInt("topic_id"));
-            multiChoice = rs.getBoolean("multiselect");
+            multiSelect = rs.getBoolean("multiselect");
         }
         if (rs != null)
             rs.close();
@@ -140,8 +149,8 @@ public class Question {
         this.text = text;
     }
     
-    public boolean isMultiChoice() {
-        return multiChoice;
+    public boolean isMultiSelect() {
+        return multiSelect;
     }
 
     public LinkedList<Answer> getAnswers() {

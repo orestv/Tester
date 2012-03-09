@@ -9,8 +9,8 @@
 <jsp:useBean class="Data.Test" scope="session" id="test"/>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-String controlType = question.isMultiChoice() ? "checkbox" : "radio";
 question.fill();
+String controlType = question.isMultiSelect() ? "checkbox" : "radio";
 %>
 <!DOCTYPE html>
 <html>

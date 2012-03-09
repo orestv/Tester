@@ -4,6 +4,12 @@
     Author     : seth
 --%>
 
+<%@page import="java.util.LinkedList"%>
+<%@page import="processors.ResultProcessor"%>
+<%@page import="java.util.LinkedHashMap"%>
+<%@page import="java.util.Hashtable"%>
+<%@page import="java.util.Dictionary"%>
+<%@page import="java.util.Map.Entry"%>
 <%@page import="Data.Question.Answer"%>
 <%@page import="Data.Question"%>
 <%@page import="java.util.HashMap"%>
@@ -42,93 +48,59 @@ boolean isFinal = rsTest.getBoolean("final");
 rsTest.close();
 stTest.close();
 
-PreparedStatement stTotals = cn.prepareStatement("SELECT SUM(points) AS taken FROM "
-	+ "(SELECT q.id, q.text, "
-	+ "CASE WHEN q.multiselect =1 THEN "
-	    + "SUM(CASE WHEN (a.correct=1 AND sa.id IS NOT NULL) "
-		+ "OR ( a.correct =0 AND sa.id IS NULL ) "
-		+ "THEN 1 ELSE 0 END) / COUNT( a.id )  "
-		+ "ELSE SUM(CASE WHEN a.correct=1 "
-		    + "AND sa.id IS NOT NULL THEN 1 ELSE 0 END) END "
-	    + "AS points "
-	+ "FROM student_answer sa "
-	+ "RIGHT OUTER JOIN answer a ON sa.answer_id = a.id "
-	+ "AND sa.test_attempt_id = ? "
-	+ "INNER JOIN question q ON a.question_id = q.id "
-	+ "GROUP BY q.id, q.text) "
-    + "pts");
-stTotals.setInt(1, attemptId);
-ResultSet rsTotals = stTotals.executeQuery();
-rsTotals.next();
-float pointsTaken = rsTotals.getFloat("taken");
-rsTotals.close();
-stTotals.close();
-PreparedStatement stQuestionCount = cn.prepareStatement("SELECT COUNT(DISTINCT a.question_id) AS questionCount FROM test_attempt ta "
-	+ "INNER JOIN student_answer sa ON sa.test_attempt_id = ta.id "
-	+ "INNER JOIN answer a ON sa.answer_id = a.id "
-	+ "WHERE ta.id = ?;");
-stQuestionCount.setInt(1, attemptId);
-ResultSet rsQuestionCount = stQuestionCount.executeQuery();
-rsQuestionCount.next();
-int pointsTotal = rsQuestionCount.getInt("questionCount");
-rsQuestionCount.close();
-stQuestionCount.close();
-HashMap<Question, Float> questionPoints = null;
-if (!isFinal) {
-    questionPoints = new HashMap<Question, Float>();
-    PreparedStatement stDetailedResults = cn.prepareStatement("SELECT q.id AS question_id, q.text AS question_text, "
-	    + "q.comment AS question_comment, a.id AS answer_id, a.text AS answer_text, q.multiselect AS multiselect, a.correct AS correct, "
-	    + "CASE WHEN sa.id IS NULL THEN 0 ELSE 1 END AS picked "
-	    + "FROM student_answer sa "
-	    + "RIGHT OUTER JOIN answer a ON sa.answer_id = a.id "
-	    + "AND sa.test_attempt_id = ? "
-	    + "INNER JOIN question q ON a.question_id = q.id "
-	    + "ORDER BY q.id DESC;");
-    stDetailedResults.setInt(1, attemptId);
-    ResultSet rsDetailedResults = stDetailedResults.executeQuery();
-    int qid_old = -1;
-    float points = 0;
-    int answers = 0;
-    Question question = null;
-    while (rsDetailedResults.next()) {
-	int qid = rsDetailedResults.getInt("question_id");
-	if (qid_old != qid) {
-	    if (question != null)
-		questionPoints.put(question, new Float(question.isMultiChoice() ? points/answers : points));
-	    points = 0;
-	    answers = 0;
-	    String qtext = rsDetailedResults.getString("question_text");
-	    String qcomment = rsDetailedResults.getString("question_comment");
-	    boolean multiselect = rsDetailedResults.getBoolean("multiselect");
-	    question = new Question(qid, qtext, qcomment, multiselect);
-	    qid_old = qid;
-	}
-	int aid = rsDetailedResults.getInt("answer_id");
-	String atext = rsDetailedResults.getString("answer_text");
-	boolean correct = rsDetailedResults.getBoolean("correct");
-	boolean selected = rsDetailedResults.getBoolean("picked");
-	if ((selected && correct) || (question.isMultiChoice() && selected == correct))
-	    points++;
-	answers++;
-	Question.Answer ans = new Question.Answer(aid, atext, correct, selected);
-	question.getAnswers().add(ans);
-    }    
-    rsDetailedResults.close();
-    stDetailedResults.close();
+LinkedList<Question> questionPoints = ResultProcessor.getDetailedResults(attemptId, cn);
+float pointsTaken = 0;
+int pointsTotal = 0;
+for (Question q : questionPoints) {
+    pointsTaken += q.getPointsTaken();
+    pointsTotal++;
 }
-
-
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Результати тесту <%=name%></title>
+        <title>Результати тесту <%= name %></title>
     </head>
     <body>
         <a href="dashboard.jsp">повернутись назад</a><br/>
-	Ваш результат - <%=pointsTaken%>/<%=pointsTotal%>
+	Ваш результат - <%= pointsTaken %>/<%= pointsTotal %><br/>
+	<%if (!isFinal) {%>
+	<table>
+	    <tr>
+		<th>Питання</th>
+		<th>Відповіді</th>
+		<th>Бали</th>
+		<th>Коментар</th>
+	    </tr>
+	    <%
+	    for (Question q : questionPoints) {
+		String controlType = (q.isMultiSelect() ? "checkbox" : "radio");
+    %>
+	    <tr>
+		<td width="30%">
+		    <%= q.getText() %>
+		</td>
+		<td width="20%">
+		    <ul style="list-style-type: none;">
+			<% for (Answer a : q.getAnswers()) { %>
+			<li <%= a.isCorrect() ? "style=\"color: green;\"" : "" %>>
+			    <input type="<%= controlType %>" disabled <%= a.isSelected() ? "checked" : "" %>/> <%= a.getText() %>
+			</li>
+			<% } %>
+		    </ul>
+		</td>
+		<td style="text-align: center;">
+		    <%= q.getPointsTaken() %>
+		</td>
+		<td>
+		    <%= q.getComment() != null ? q.getComment() : "" %>
+		</td>
+	    </tr>	    
+	    <%}%>	    
+	</table>	
+	<%}%>
     </body>
 </html>
 
