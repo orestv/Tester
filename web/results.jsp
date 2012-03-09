@@ -4,6 +4,9 @@
     Author     : seth
 --%>
 
+<%@page import="Data.Question.Answer"%>
+<%@page import="Data.Question"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.PreparedStatement"%>
 <%@page import="java.sql.Connection"%>
@@ -70,6 +73,51 @@ rsQuestionCount.next();
 int pointsTotal = rsQuestionCount.getInt("questionCount");
 rsQuestionCount.close();
 stQuestionCount.close();
+HashMap<Question, Float> questionPoints = null;
+if (!isFinal) {
+    questionPoints = new HashMap<Question, Float>();
+    PreparedStatement stDetailedResults = cn.prepareStatement("SELECT q.id AS question_id, q.text AS question_text, "
+	    + "q.comment AS question_comment, a.id AS answer_id, a.text AS answer_text, q.multiselect AS multiselect, a.correct AS correct, "
+	    + "CASE WHEN sa.id IS NULL THEN 0 ELSE 1 END AS picked "
+	    + "FROM student_answer sa "
+	    + "RIGHT OUTER JOIN answer a ON sa.answer_id = a.id "
+	    + "AND sa.test_attempt_id = ? "
+	    + "INNER JOIN question q ON a.question_id = q.id "
+	    + "ORDER BY q.id DESC;");
+    stDetailedResults.setInt(1, attemptId);
+    ResultSet rsDetailedResults = stDetailedResults.executeQuery();
+    int qid_old = -1;
+    float points = 0;
+    int answers = 0;
+    Question question = null;
+    while (rsDetailedResults.next()) {
+	int qid = rsDetailedResults.getInt("question_id");
+	if (qid_old != qid) {
+	    if (question != null)
+		questionPoints.put(question, new Float(question.isMultiChoice() ? points/answers : points));
+	    points = 0;
+	    answers = 0;
+	    String qtext = rsDetailedResults.getString("question_text");
+	    String qcomment = rsDetailedResults.getString("question_comment");
+	    boolean multiselect = rsDetailedResults.getBoolean("multiselect");
+	    question = new Question(qid, qtext, qcomment, multiselect);
+	    qid_old = qid;
+	}
+	int aid = rsDetailedResults.getInt("answer_id");
+	String atext = rsDetailedResults.getString("answer_text");
+	boolean correct = rsDetailedResults.getBoolean("correct");
+	boolean selected = rsDetailedResults.getBoolean("picked");
+	if ((selected && correct) || (question.isMultiChoice() && selected == correct))
+	    points++;
+	answers++;
+	Question.Answer ans = new Question.Answer(aid, atext, correct, selected);
+	question.getAnswers().add(ans);
+    }    
+    rsDetailedResults.close();
+    stDetailedResults.close();
+}
+
+
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

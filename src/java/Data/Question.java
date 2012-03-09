@@ -21,12 +21,18 @@ public class Question {
         private int id;
         private String text;
         private boolean correct;
+	private boolean selected = false;
 
         public Answer(int id, String text, boolean correct) {
             this.id = id;
             this.text = text;
             this.correct = correct;
         }
+	
+	public Answer (int id, String text, boolean correct, boolean selected) {
+	    this(id, text, correct);
+	    this.selected = selected;
+	}
 
         public boolean isCorrect() {
             return correct;
@@ -51,6 +57,14 @@ public class Question {
         public void setText(String text) {
             this.text = text;
         }
+
+	public boolean isSelected() {
+	    return selected;
+	}
+
+	public void setSelected(boolean selected) {
+	    this.selected = selected;
+	}
     }
 
     private int id;
@@ -65,6 +79,13 @@ public class Question {
 
     public Question(int id) {
         this.id = id;
+    }
+    
+    public Question (int id, String text, String comment, boolean multiselect) {
+	this.id = id;
+	this.text = text;
+	this.comment = comment;
+	this.multiChoice = multiselect;
     }
     
     public void fill() throws SQLException {
