@@ -59,7 +59,7 @@
 	</script>
     </head>
     <body>
-        <div id="topicList" style="border-style: 1px solid black;">
+        <div id="topicList" style="border-style: 1px solid black; float: left;">
             <table>
                 <tr>
                     <th colspan="99">
@@ -96,7 +96,7 @@
 		</tr>
             </table>
         </div>
-	<div>
+	<div style="float: left; margin-left: 15px;">
 	    <h2>Створити тест</h2>		
 	    <form action="TestAdd" method="POST">
 		Назва тесту: <input type="text" name="name" value="Тест"/><br/>

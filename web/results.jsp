@@ -82,7 +82,7 @@ for (Question q : questionPoints) {
 		<td width="30%">
 		    <%= q.getText() %>
 		</td>
-		<td width="20%">
+		<td width="40%">
 		    <ul style="list-style-type: none;">
 			<% for (Answer a : q.getAnswers()) { %>
 			<li <%= a.isCorrect() ? "style=\"color: green;\"" : "" %>>

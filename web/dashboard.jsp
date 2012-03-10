@@ -88,7 +88,7 @@
 			    + "CASE WHEN q.multiselect         "
 			    + "THEN SUM( CASE WHEN (a.correct = 1 AND sa.id IS NOT NULL)                          "
 			    + "OR (a.correct = 0 AND sa.id IS NULL)                         "
-			    + "THEN 1 ELSE 0 END             ) / COUNT(a.id)     "
+			    + "THEN 1 ELSE 0 END) / COUNT(a.id)     "
 			    + "ELSE SUM(CASE WHEN a.correct = 1 AND sa.id IS NOT NULL THEN 1 ELSE 0 END)     "
 			    + "END AS points     "
 			    + "FROM test_attempt ta     "
