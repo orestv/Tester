@@ -53,9 +53,10 @@
 	<div id="availableTests" style="float:left;">
 	    <%
 		PreparedStatement st = cn.prepareStatement("SELECT DISTINCT (test.id), test.name AS test_name, "
-			+ "topic.name AS topic_name FROM test "
-			+ "INNER JOIN test_topics tt ON test.id = tt.test_id "
-			+ "INNER JOIN topic ON tt.topic_id = topic.id");
+			+ "COALESCE(MAX(TestResult(ta.id)), -1) AS result FROM test "
+			+ "LEFT OUTER JOIN test_attempt ta ON ta.test_id = test.id "
+			+ "AND ta.student_id = ?;");
+		st.setInt(1, user.getId());
 		ResultSet rs = st.executeQuery();
 		boolean testsAvailable = false;
 	    %>
@@ -63,7 +64,8 @@
 		while (rs.next()) {
 		    testsAvailable = true;
 		%>
-		<li><a href="test.jsp?t=<%=rs.getInt("id")%>"><%=rs.getString("test_name")%></a></li>
+		<li><a href="test.jsp?t=<%=rs.getInt("id")%>"><%=rs.getString("test_name")%></a>
+		    <%= rs.getFloat("result") != -1 ? rs.getFloat("result") : "" %> </li>
 		<%
 		    }
 		    st.close();
