@@ -31,7 +31,7 @@ public class DBUtils {
     }
     public static String format(Date date) {
 	if (dateFormat == null)
-	    dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:m");
+	    dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 	return dateFormat.format(date);
     }
 }

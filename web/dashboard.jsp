@@ -33,12 +33,12 @@
 	    userNotFound = false;
 	}
 	if (rs != null) {
-	rs.close();
+	    rs.close();
 	}
 	if (st != null) {
 	    st.close();
 	}
-    }    
+    }
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -71,26 +71,68 @@
 		%>
 	    </ul>
 	</div>
-	<div id="completedTests" style="float: left">
+	<div id="completedTests" style="float: left; margin-left: 55px;">
 	    <h2>Завершені тести: </h2>
-	    <ul>
+	    <table>
+		<tr>
+		    <th>Тест</th>
+		    <th>Час завершення</th>
+		    <th>Бали</th>		    
+		    <th>Дії</th>
+		</tr>
 		<%
-		    PreparedStatement stFinished = cn.prepareStatement("SELECT t.name AS testname, "
-			    + "a.id AS attempt_id, a.start AS start, a.end AS end "
-			    + "FROM test_attempt a INNER JOIN test t ON a.test_id = t.id "
-			    + "WHERE a.student_id = ? AND a.end IS NOT NULL;");
+		    PreparedStatement stFinished = cn.prepareStatement("SELECT ta.id AS attempt_id, t.id AS test_id, "
+			    + "t.name AS test_name, ta.start AS start, ta.end AS end, t.final AS final, "
+			    + "COUNT(question_id) AS max, SUM(points) AS taken "
+			    + "FROM (SELECT ta.id AS test_attempt_id, q.id AS question_id,      "
+			    + "CASE WHEN q.multiselect         "
+			    + "THEN SUM( CASE WHEN (a.correct = 1 AND sa.id IS NOT NULL)                          "
+			    + "OR (a.correct = 0 AND sa.id IS NULL)                         "
+			    + "THEN 1 ELSE 0 END             ) / COUNT(a.id)     "
+			    + "ELSE SUM(CASE WHEN a.correct = 1 AND sa.id IS NOT NULL THEN 1 ELSE 0 END)     "
+			    + "END AS points     "
+			    + "FROM test_attempt ta     "
+			    + "INNER JOIN test t ON ta.test_id = t.id     "
+			    + "INNER JOIN question_sequence qs  ON qs.test_id = t.id AND (qs.student_id IS NULL OR qs.student_id = ta.student_id)     "
+			    + "INNER JOIN question_sequence_questions qsq ON qsq.sequence_id = qs.id     "
+			    + "INNER JOIN question q ON qsq.question_id = q.id     "
+			    + "INNER JOIN answer a ON a.question_id = q.id     "
+			    + "LEFT OUTER JOIN student_answer sa ON sa.test_attempt_id = ta.id AND sa.answer_id = a.id     "
+			    + "GROUP BY ta.id, q.id     ORDER BY q.id ) pts "
+			    + "INNER JOIN test_attempt ta     ON pts.test_attempt_id = ta.id "
+			    + "INNER JOIN test t ON ta.test_id = t.id "
+			    + "WHERE ta.student_id = ? AND ta.end IS NOT NULL "
+			    + "GROUP BY ta.id");
 		    stFinished.setInt(1, user.getId());
 		    rs = stFinished.executeQuery();
 		    while (rs.next()) {
 		%>
-		<li><%=rs.getString("testname")%> (<%= DBUtils.format(rs.getTimestamp("start")) %> - <%= DBUtils.format(rs.getTimestamp("end")) %>)
-		    <a href="results.jsp?id=<%=rs.getInt("attempt_id")%>">переглянути результат</a></li>
+		<tr>
+		    <td>
+			<%= rs.getString("test_name")%>
+		    </td>
+		    <td>
+			<%= DBUtils.format(rs.getTimestamp("end"))%>
+		    </td>
+		    <td>
+			<%= rs.getFloat("taken")%>/<%= rs.getInt("max")%>
+		    </td>
+		    <td>
+			<% if (!rs.getBoolean("final")) { %>
+			    <a href="results.jsp?id=<%=rs.getInt("attempt_id")%>">Переглянути результат</a><br/>
+			<% } %>
+			<a href="test.jsp?t=<%= rs.getInt("test_id") %>">Пройти ще раз</a>
+		    </td>
+		</tr>   
 		<%
 		    }
-		    rs.close();
-		    stFinished.close();
 		%>
-	    </ul>
+	    </table>
+	    <%
+
+		rs.close();
+		stFinished.close();
+	    %>
 	</div>
 	<%} else {%>
         Не вдалось знайти користувача. Будь ласка, переконайтесь у правильності посилання, використаного для входу на сторінку.
