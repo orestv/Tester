@@ -4,6 +4,7 @@
     Author     : seth
 --%>
 
+<%@page import="Data.Test"%>
 <%@page import="Data.Topic"%>
 <%@page import="java.util.LinkedList"%>
 <%@page import="java.sql.ResultSet"%>
@@ -72,7 +73,7 @@
                     <th>Дії</th>
                 </tr>                
 		<%
-		for (Topic t : topics) {
+		    for (Topic t : topics) {
 		%>
                 <tr>
                     <td><%=t.getName()%></td>
@@ -104,17 +105,73 @@
 		<input type="radio" name="type" value="final"/> Контрольний<br/>
 		<h3>Теми:</h3>
 		<ul style="list-style-type: none;">
-		<%
-		    for (Topic t : topics) {
-			%>
-			<li><input type="checkbox" name="topics" onchange="testTopicCheckboxChanged(this, <%=t.getQuestionCount()%>);" value="<%=t.getId()%>"/> <%=t.getName()%> (<%=t.getQuestionCount()%> питань) </li>
+		    <%
+			for (Topic t : topics) {
+		    %>
+		    <li><input type="checkbox" name="topics" onchange="testTopicCheckboxChanged(this, <%=t.getQuestionCount()%>);" value="<%=t.getId()%>"/> <%=t.getName()%> (<%=t.getQuestionCount()%> питань) </li>
 			<%
-		    }
-		%>
+			    }
+			%>
 		</ul>
 		Кількість питань: <input id="questionCount" type="number" name="questionCount" value="0" min="0" max="0"/> (до <span id="spQuestionCount">0</span>)<br/>
 		<input type="submit" value="Створити тест"/>
 	    </form>
+	</div>
+	<%
+	LinkedList<Test> tests = new LinkedList<Test>();
+	Statement stTests = cn.createStatement();
+	ResultSet rsTests = stTests.executeQuery("SELECT test.id AS test_id, "
+		+ "test.name AS test_name, topic.id AS topic_id, topic.name AS topic_name "
+		+ "FROM test "
+		+ "INNER JOIN test_topics tt ON test.id = tt.test_id "
+		+ "INNER JOIN topic ON topic.id = tt.topic_id;");
+	
+	int tid_old = -1;
+	Test test = null;
+	while (rsTests.next()) {
+	    int testId = rsTests.getInt("test_id");
+	    if (tid_old != testId) {
+		if (test != null)
+		    tests.add(test);
+		String testName = rsTests.getString("test_name");
+		test = new Test(testId, testName);
+		tid_old = testId;
+	    }
+	    int topicId = rsTests.getInt("topic_id");
+	    String topicName = rsTests.getString("topic_name");
+	    test.getTopics().add(new Topic(topicId, topicName));
+	}
+	if (test != null)
+	    tests.add(test);
+	
+	stTests.close();
+	rsTests.close();
+	%>
+	<div style="float: left; margin-left: 15px">
+	    <h2>Тести</h2>
+	    <table>
+		<tr>
+		    <th>Назва</th>
+		    <th>Теми</th>
+		</tr>
+		<%
+		for (Test t : tests) { %>
+		<tr>
+		    <td>
+			<%= t.getName() %>
+		    </td>
+		    <td>
+			<ul>
+			<% for (Topic topic : t.getTopics()) { %>
+			    <li><%= topic.getName() %> </li>
+			<% } %>
+			</ul>
+		    </td>
+		</tr>
+		<%
+		}
+		%>
+	    </table>
 	</div>
     </body>
 </html>

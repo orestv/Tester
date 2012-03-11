@@ -11,42 +11,40 @@ import java.util.LinkedList;
  * @author seth
  */
 public class Test {
-    private int questionSequenceId = 0;
-    private LinkedList<Integer> questionIds = new LinkedList<Integer>();
-    private int currentIndex = 0;
+    private LinkedList<Topic> topics;
+    private int id;
+    private String name;
 
-    public LinkedList<Integer> getQuestionIds() {
-        if (questionIds == null)
-            questionIds = new LinkedList<Integer>();
-        return questionIds;
-    }
-
-    public void setQuestionIds(LinkedList<Integer> questionIds) {
-        this.questionIds = questionIds;
-    }
-
-    public int getCurrentQuestionId() {
-        return questionIds.size() >= currentIndex + 1 ? questionIds.get(currentIndex) : 0;
+    public Test(int id, String name) {
+	this.id = id;
+	this.name = name;
     }
     
-    public void moveNext() {
-        currentIndex++;
-    }
-    
-    public void clear() {
-       getQuestionIds().clear();
-       currentIndex = 0;
-    }
-    
-    public boolean isLast() {
-        return questionIds.size() == currentIndex + 1;
+
+    public int getId() {
+	return id;
     }
 
-    public int getQuestionSequenceId() {
-        return questionSequenceId;
+    public void setId(int id) {
+	this.id = id;
     }
 
-    public void setQuestionSequenceId(int questionSequenceId) {
-        this.questionSequenceId = questionSequenceId;
+    public String getName() {
+	return name;
     }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    public LinkedList<Topic> getTopics() {
+	if (topics == null)
+	    topics = new LinkedList<Topic>();
+	return topics;
+    }
+
+    public void setTopics(LinkedList<Topic> topics) {
+	this.topics = topics;
+    }
+    
 }

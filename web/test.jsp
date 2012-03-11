@@ -10,7 +10,7 @@
 <%@page import="dbutils.DBUtils"%>
 <jsp:useBean class="Data.User" scope="session" id="user"/>
 <jsp:useBean class="Data.Question" scope="session" id="question"/>
-<jsp:useBean class="Data.Test" scope="session" id="test"/>
+<jsp:useBean class="Data.TestSequence" scope="session" id="test"/>
 <jsp:useBean class="Data.TestAttempt" scope="session" id="testAttempt"/>
 <jsp:setProperty name="question" property="*"/>
 <jsp:setProperty name="test" property="*"/>

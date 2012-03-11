@@ -60,18 +60,30 @@
 		ResultSet rs = st.executeQuery();
 		boolean testsAvailable = false;
 	    %>
-	    <h2>Доступні тести:</h2><ul><%
-		while (rs.next()) {
-		    testsAvailable = true;
-		%>
-		<li><a href="test.jsp?t=<%=rs.getInt("id")%>"><%=rs.getString("test_name")%></a>
-		    <%= rs.getFloat("result") != -1 ? rs.getFloat("result") : "" %> </li>
+	    <h2>Доступні тести:</h2>
+	    <table>
+		<tr>
+		    <th>Назва</th>
+		    <th>Кращий результат</th>
+		</tr>
 		<%
-		    }
-		    st.close();
-		    rs.close();
+		    while (rs.next()) {
+			testsAvailable = true;
 		%>
-	    </ul>
+		<tr>
+		    <td>
+			<a href="test.jsp?t=<%=rs.getInt("id")%>"><%=rs.getString("test_name")%></a>
+		    </td>
+		    <td>
+			<%= rs.getFloat("result") != -1 ? rs.getFloat("result") : ""%>			
+		    </td>
+		</tr>
+		    <%
+			}
+			st.close();
+			rs.close();
+		    %>
+	    </table>
 	</div>
 	<div id="completedTests" style="float: left; margin-left: 55px;">
 	    <h2>Завершені тести: </h2>
@@ -120,10 +132,10 @@
 			<%= rs.getFloat("taken")%>/<%= rs.getInt("max")%>
 		    </td>
 		    <td>
-			<% if (!rs.getBoolean("final")) { %>
-			    <a href="results.jsp?id=<%=rs.getInt("attempt_id")%>">Переглянути результат</a><br/>
-			<% } %>
-			<a href="test.jsp?t=<%= rs.getInt("test_id") %>">Пройти ще раз</a>
+			<% if (!rs.getBoolean("final")) {%>
+			<a href="results.jsp?id=<%=rs.getInt("attempt_id")%>">Переглянути результат</a><br/>
+			<% }%>
+			<a href="test.jsp?t=<%= rs.getInt("test_id")%>">Пройти ще раз</a>
 		    </td>
 		</tr>   
 		<%

@@ -3,7 +3,7 @@
 <%@page import="Data.Question"%>
 <jsp:useBean class="Data.User" id="user" scope="session"/>
 <jsp:useBean class="Data.Question" id="question" scope="session"/>
-<jsp:useBean class="Data.Test" scope="session" id="test"/>
+<jsp:useBean class="Data.TestSequence" scope="session" id="test"/>
 <jsp:useBean class="Data.TestAttempt" scope="session" id="testAttempt"/>
 <%
 String[] answers = request.getParameterValues("answer");
