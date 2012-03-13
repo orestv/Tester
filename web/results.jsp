@@ -65,7 +65,7 @@ for (Question q : questionPoints) {
     </head>
     <body>
         <a href="dashboard.jsp">повернутись назад</a><br/>
-	Ваш результат - <%= pointsTaken %>/<%= pointsTotal %><br/>
+	<h3>Ваш результат - <%= pointsTaken %>/<%= pointsTotal %></h3><br/>
 	<%if (!isFinal) {%>
 	<table>
 	    <tr>
