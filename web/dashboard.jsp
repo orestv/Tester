@@ -53,10 +53,16 @@
 	<div id="availableTests" style="float:left;">
 	    <%
 		PreparedStatement st = cn.prepareStatement("SELECT DISTINCT (test.id), test.name AS test_name, "
-			+ "COALESCE(MAX(TestResult(ta.id)), -1) AS result FROM test "
+			+ "MAX(TestResult(ta.id)) AS result, COUNT(DISTINCT qsq.question_id) AS maxResult FROM test "
 			+ "LEFT OUTER JOIN test_attempt ta ON ta.test_id = test.id "
-			+ "AND ta.student_id = ?;");
+			+ "AND ta.student_id = ? "
+			+ "INNER JOIN question_sequence qs "
+			+ "ON qs.test_id = test.id AND (qs.student_id = ? OR qs.student_id IS NULL) "
+			+ "INNER JOIN question_sequence_questions qsq "
+			+ "ON qsq.sequence_id = qs.id "
+			+ "GROUP BY test.id, qs.id;");
 		st.setInt(1, user.getId());
+		st.setInt(2, user.getId());
 		ResultSet rs = st.executeQuery();
 		boolean testsAvailable = false;
 	    %>
@@ -69,13 +75,16 @@
 		<%
 		    while (rs.next()) {
 			testsAvailable = true;
+			float result = rs.getFloat("result");
+			int maxResult = rs.getInt("maxResult");
+			String sResult = (result != -1 ? String.format("%.2f із %d", result, maxResult) : "N/A");
 		%>
 		<tr>
 		    <td>
 			<a href="test.jsp?t=<%=rs.getInt("id")%>"><%=rs.getString("test_name")%></a>
 		    </td>
-		    <td>
-			<%= rs.getFloat("result") != -1 ? rs.getFloat("result") : ""%>			
+		    <td style="text-align: center;">
+			<%= sResult %>			
 		    </td>
 		</tr>
 		    <%
