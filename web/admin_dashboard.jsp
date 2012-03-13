@@ -58,15 +58,12 @@
 		    questionCountInput.value = questionCount;
 	    }
 	</script>
+	<link rel="stylesheet" href="styles.css"/>
     </head>
     <body>
         <div id="topicList" style="border-style: 1px solid black; float: left;">
+	    <h2>Теми</h2>
             <table>
-                <tr>
-                    <th colspan="99">
-			Теми
-                    </th>
-                </tr>
                 <tr>
                     <th>Назва</th>
                     <th>Кількість запитань</th>

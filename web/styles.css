@@ -1,0 +1,19 @@
+table {
+    margin: 15px;
+    border-collapse: collapse;
+}
+
+tr {
+    padding: 5px;
+    border: 1px solid black;
+}
+
+td, th {
+    border: 2px lightgray ridge;
+    text-align: center;
+    padding: 4px;
+}
+
+h2 {
+    text-align: center;
+}
