@@ -25,7 +25,7 @@ public class TestAttempt {
     
     public void finish(Connection cn) throws SQLException {
 	PreparedStatement st = cn.prepareStatement("UPDATE test_attempt "
-		+ "SET end = CURRENT_TIMESTAMP() WHERE id = ?;");
+		+ "SET end = CURRENT_TIMESTAMP(), result = TestResult(id) WHERE id = ?;");
 	st.setInt(1, getId());
 	st.executeUpdate();
 	st.close();

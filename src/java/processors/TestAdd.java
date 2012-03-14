@@ -52,10 +52,11 @@ public class TestAdd extends HttpServlet {
 	    boolean isFinal = (type.equals("final"));
 	    
 	    //Create the test -----------------------------------------------------------------
-	    PreparedStatement st = cn.prepareStatement("INSERT INTO test (name, final) "
-		    + "VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
+	    PreparedStatement st = cn.prepareStatement("INSERT INTO test (name, final, questionCount) "
+		    + "VALUES (?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
 	    st.setString(1, name);
 	    st.setBoolean(2, isFinal);
+	    st.setInt(3, questionCount);
 	    st.executeUpdate();
 	    ResultSet rs = st.getGeneratedKeys();
 	    rs.next();
