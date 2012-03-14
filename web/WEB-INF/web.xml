@@ -24,6 +24,10 @@
         <servlet-name>TestAdd</servlet-name>
         <servlet-class>processors.TestAdd</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StudentAdd</servlet-name>
+        <servlet-class>processors.StudentAdd</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>QuestionsUpload</servlet-name>
         <url-pattern>/QuestionsUpload</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>TestAdd</servlet-name>
         <url-pattern>/TestAdd</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StudentAdd</servlet-name>
+        <url-pattern>/StudentAdd</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

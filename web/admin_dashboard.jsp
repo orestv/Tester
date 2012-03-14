@@ -115,34 +115,36 @@
 	    </form>
 	</div>
 	<%
-	LinkedList<Test> tests = new LinkedList<Test>();
-	Statement stTests = cn.createStatement();
-	ResultSet rsTests = stTests.executeQuery("SELECT test.id AS test_id, "
-		+ "test.name AS test_name, topic.id AS topic_id, topic.name AS topic_name "
-		+ "FROM test "
-		+ "INNER JOIN test_topics tt ON test.id = tt.test_id "
-		+ "INNER JOIN topic ON topic.id = tt.topic_id;");
-	
-	int tid_old = -1;
-	Test test = null;
-	while (rsTests.next()) {
-	    int testId = rsTests.getInt("test_id");
-	    if (tid_old != testId) {
-		if (test != null)
-		    tests.add(test);
-		String testName = rsTests.getString("test_name");
-		test = new Test(testId, testName);
-		tid_old = testId;
+	    LinkedList<Test> tests = new LinkedList<Test>();
+	    Statement stTests = cn.createStatement();
+	    ResultSet rsTests = stTests.executeQuery("SELECT test.id AS test_id, "
+		    + "test.name AS test_name, topic.id AS topic_id, topic.name AS topic_name "
+		    + "FROM test "
+		    + "INNER JOIN test_topics tt ON test.id = tt.test_id "
+		    + "INNER JOIN topic ON topic.id = tt.topic_id;");
+
+	    int tid_old = -1;
+	    Test test = null;
+	    while (rsTests.next()) {
+		int testId = rsTests.getInt("test_id");
+		if (tid_old != testId) {
+		    if (test != null) {
+			tests.add(test);
+		    }
+		    String testName = rsTests.getString("test_name");
+		    test = new Test(testId, testName);
+		    tid_old = testId;
+		}
+		int topicId = rsTests.getInt("topic_id");
+		String topicName = rsTests.getString("topic_name");
+		test.getTopics().add(new Topic(topicId, topicName));
 	    }
-	    int topicId = rsTests.getInt("topic_id");
-	    String topicName = rsTests.getString("topic_name");
-	    test.getTopics().add(new Topic(topicId, topicName));
-	}
-	if (test != null)
-	    tests.add(test);
-	
-	stTests.close();
-	rsTests.close();
+	    if (test != null) {
+		tests.add(test);
+	    }
+
+	    stTests.close();
+	    rsTests.close();
 	%>
 	<div style="float: left; margin-left: 15px">
 	    <h2>Тести</h2>
@@ -152,24 +154,77 @@
 		    <th>Теми</th>
 		</tr>
 		<%
-		for (Test t : tests) { %>
+		    for (Test t : tests) {%>
 		<tr>
 		    <td>
-			<%= t.getName() %>
+			<%= t.getName()%>
 		    </td>
 		    <td>
 			<ul>
-			<% for (Topic topic : t.getTopics()) { %>
-			    <li><%= topic.getName() %> </li>
-			<% } %>
+			    <% for (Topic topic : t.getTopics()) {%>
+			    <li><%= topic.getName()%> </li>
+			    <% }%>
 			</ul>
 		    </td>
 		</tr>
 		<%
-		}
+		    }
 		%>
 	    </table>
 	</div>
+	<%
+	    Statement stStudents = cn.createStatement();
+	    ResultSet rsStudents = stStudents.executeQuery("SELECT id, firstname, lastname, "
+		    + "email FROM student;");
+	%>
+	<div style="float: left; margin-left: 15px;">
+	    <h2>Студенти</h2>
+	    <form action="StudentAdd" method="POST">
+		<table>
+		    <tr>
+			<th>
+			    Прізвище
+			</th>
+			<th>
+			    Ім’я
+			</th>
+			<th>
+			    Пошта
+			</th>
+		    </tr>
+		    <%
+			while (rsStudents.next()) {
+		    %>
+		    <tr>
+			<td>
+			    <%= rsStudents.getString("lastname")%>
+			</td>
+			<td>
+			    <%= rsStudents.getString("firstname")%> 
+			</td>
+			<td>
+			    <%= rsStudents.getString("email")%>
+			</td>
+		    </tr>
+		    <% }%>
+		    <tr>
+			<td>
+			    <input type="text" name="firstName" required="true"/> 
+			</td>
+			<td>
+			    <input type="text" name="lastName" required="true"/>
+			</td>
+			<td>
+			    <input type="text" name="email" required="true"/> <input type="submit" value="Додати"/>
+			</td>
+		    </tr>
+		</table>
+	    </form>
+	</div>
+	<%
+	    rsStudents.close();
+	    stStudents.close();
+	%>
     </body>
 </html>
 <%
