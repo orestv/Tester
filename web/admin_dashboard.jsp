@@ -175,7 +175,7 @@
 	<%
 	    Statement stStudents = cn.createStatement();
 	    ResultSet rsStudents = stStudents.executeQuery("SELECT id, firstname, lastname, "
-		    + "email FROM student;");
+		    + "email FROM student ORDER BY lastname, firstname;");
 	%>
 	<div style="float: left; margin-left: 15px;">
 	    <h2>Студенти</h2>
@@ -209,10 +209,10 @@
 		    <% }%>
 		    <tr>
 			<td>
-			    <input type="text" name="firstName" required="true"/> 
+			    <input type="text" name="lastName" required="true"/> 
 			</td>
 			<td>
-			    <input type="text" name="lastName" required="true"/>
+			    <input type="text" name="firstName" required="true"/>
 			</td>
 			<td>
 			    <input type="text" name="email" required="true"/> <input type="submit" value="Додати"/>
