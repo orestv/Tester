@@ -205,6 +205,9 @@
 			<td>
 			    <%= rsStudents.getString("email")%>
 			</td>
+			<td>
+			    <a href="StudentDelete?id=<%= rsStudents.getInt("id") %>"><img src="images/delete.ico"/></a>
+			</td>
 		    </tr>
 		    <% }%>
 		    <tr>
