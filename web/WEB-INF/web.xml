@@ -32,6 +32,10 @@
         <servlet-name>StudentDelete</servlet-name>
         <servlet-class>processors.StudentDelete</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LoginHandler</servlet-name>
+        <servlet-class>processors.LoginHandler</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>QuestionsUpload</servlet-name>
         <url-pattern>/QuestionsUpload</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>StudentDelete</servlet-name>
         <url-pattern>/StudentDelete</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LoginHandler</servlet-name>
+        <url-pattern>/LoginHandler</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
