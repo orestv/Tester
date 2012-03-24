@@ -11,23 +11,13 @@ package Data;
 public class User {
     private String firstname;
     private String lastname;
-    private String email;
     private int id = -1;
 
     public User() {}
-    public User(String firstname, String lastname, String email, int id) {
+    public User(String firstname, String lastname, int id) {
         this.firstname = firstname;
         this.lastname = lastname;
-        this.email = email;
         this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getFirstname() {

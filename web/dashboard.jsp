@@ -14,10 +14,10 @@
 <%@page import="java.sql.Connection"%>
 <%
     Connection cn = dbutils.DBUtils.conn();
-    if (user.getId() == -1) {
+    if (user.getId() == -1 || request.getParameter("u") != null) {
 	boolean userNotFound = true;
 	String userHash = request.getParameter("u");
-	PreparedStatement st = cn.prepareStatement("SELECT id, firstname, lastname, email "
+	PreparedStatement st = cn.prepareStatement("SELECT id, firstname, lastname "
 		+ "FROM student WHERE hash = ?");
 	st.setString(1, userHash);
 	ResultSet rs = st.executeQuery();
@@ -25,11 +25,9 @@
 	    int id = rs.getInt("id");
 	    String firstname = rs.getString("firstname");
 	    String lastname = rs.getString("lastname");
-	    String email = rs.getString("email");
 	    user.setId(id);
 	    user.setFirstname(firstname);
 	    user.setLastname(lastname);
-	    user.setEmail(email);
 	    userNotFound = false;
 	}
 	if (rs != null) {

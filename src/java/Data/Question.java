@@ -114,7 +114,7 @@ public class Question {
         if (st != null)
             st.close();
         
-        st = cn.prepareStatement("SELECT id, text, correct FROM answer WHERE question_id = ?");
+        st = cn.prepareStatement("SELECT id, text, correct FROM answer WHERE question_id = ? ORDER BY RAND();");
         st.setInt(1, id);
         rs = st.executeQuery();
         answers = new LinkedList<Answer>();

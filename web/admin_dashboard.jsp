@@ -174,8 +174,8 @@
 	</div>
 	<%
 	    Statement stStudents = cn.createStatement();
-	    ResultSet rsStudents = stStudents.executeQuery("SELECT id, firstname, lastname, "
-		    + "email FROM student ORDER BY lastname, firstname;");
+	    ResultSet rsStudents = stStudents.executeQuery("SELECT id, firstname, lastname "
+		    + "FROM student ORDER BY lastname, firstname;");
 	%>
 	<div style="float: left; margin-left: 15px;">
 	    <h2>Студенти</h2>
@@ -189,7 +189,7 @@
 			    Ім’я
 			</th>
 			<th>
-			    Пошта
+			    Дії
 			</th>
 		    </tr>
 		    <%
@@ -201,9 +201,6 @@
 			</td>
 			<td>
 			    <%= rsStudents.getString("firstname")%> 
-			</td>
-			<td>
-			    <%= rsStudents.getString("email")%>
 			</td>
 			<td>
 			    <a href="StudentDelete?id=<%= rsStudents.getInt("id") %>"><img src="images/delete.ico"/></a>
@@ -218,7 +215,7 @@
 			    <input type="text" name="firstName" required="true"/>
 			</td>
 			<td>
-			    <input type="text" name="email" required="true"/> <input type="submit" value="Додати"/>
+			    <input type="submit" value="Додати"/>
 			</td>
 		    </tr>
 		</table>
