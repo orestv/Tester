@@ -27,7 +27,7 @@
     stStudent.close();
     
     PreparedStatement st = cn.prepareStatement("SELECT ta.id AS attempt_id, "
-	    + "TestResult(ta.id) AS result, COUNT(qsq.question_id) AS max_result "
+	    + "ta.result AS result, COUNT(qsq.question_id) AS max_result "
 	    + "FROM test_attempt ta "
 	    + "INNER JOIN test t ON ta.test_id = t.id "
 	    + "INNER JOIN question_sequence qs ON qs.test_id = t.id AND "

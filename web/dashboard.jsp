@@ -52,7 +52,7 @@
 	<div id="availableTests" style="float:left;">
 	    <%
 		PreparedStatement st = cn.prepareStatement("SELECT DISTINCT (test.id), test.name AS test_name, "
-			+ "MAX(TestResult(ta.id)) AS result, COUNT(DISTINCT qsq.question_id) AS maxResult FROM test "
+			+ "MAX(ta.result) AS result, COUNT(DISTINCT qsq.question_id) AS maxResult FROM test "
 			+ "LEFT OUTER JOIN test_attempt ta ON ta.test_id = test.id "
 			+ "AND ta.student_id = ? "
 			+ "INNER JOIN question_sequence qs "
@@ -76,7 +76,7 @@
 			testsAvailable = true;
 			float result = rs.getFloat("result");
 			int maxResult = rs.getInt("maxResult");
-			String sResult = (result != -1 ? String.format("%.2f із %d", result, maxResult) : "N/A");
+			String sResult = (result != 0 ? String.format("%.2f із %d", result, maxResult) : "N/A");
 		%>
 		<tr>
 		    <td>

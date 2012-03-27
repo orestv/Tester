@@ -24,8 +24,9 @@ public class TestAttempt {
     }
     
     public void finish(Connection cn) throws SQLException {
-	PreparedStatement st = cn.prepareStatement("UPDATE test_attempt "
-		+ "SET end = CURRENT_TIMESTAMP(), result = TestResult(id) WHERE id = ?;");
+	PreparedStatement st = cn.prepareStatement("UPDATE test_attempt ta "
+		+ "LEFT JOIN viewTestAttemptResult tar ON ta.id = tar.testAttemptID "
+		+ "SET end = CURRENT_TIMESTAMP(), result = tar.points WHERE ta.id = ?;");
 	st.setInt(1, getId());
 	st.executeUpdate();
 	st.close();
