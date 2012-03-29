@@ -23,7 +23,7 @@ if (Admin.isPasswordValid(password)){
     </head>
     <body>
         <form action="admin.jsp" method="POST">
-            Введіть пароль: <input type="password" name="pwd" value="HardTaught"/>
+            Введіть пароль: <input type="password" name="pwd" value=""/>
             <input type="submit" value="Вхід"/>
         </form>
     </body>

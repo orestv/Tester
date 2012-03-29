@@ -25,8 +25,8 @@ import javax.servlet.http.Part;
  * @author seth
  */
 public class QuestionsUpload extends HttpServlet {
-    private final String REGEX_NEWLINE = "\\r?\\n|\\r";
-    private final String REGEX_DOUBLE_NEWLINE = "(\\r?\\n|\\r){2,}";
+    private final String REGEX_NEWLINE = "(\\r)?\\n";
+    private final String REGEX_DOUBLE_NEWLINE = "((\\r)?\\n){2,}";
 
     /**
      * Processes requests for both HTTP
@@ -47,18 +47,20 @@ public class QuestionsUpload extends HttpServlet {
             String questionList = null;
             for (Part p : request.getParts()) {
                 String value = readStream(p.getInputStream());
+		out.write(value);
                 if (p.getName().equals("questionListFile")) {
                     questionList = value;
                 } else if (p.getName().equals("topicId")) {
                     topicId = Integer.parseInt(value);
                 }
             }
-            if (questionList != null && topicId > 0)
+            if (questionList != null && topicId > 0) {
                 addQuestions(topicId, questionList);
+		response.sendRedirect("question_list.jsp?topic=" + Integer.toString(topicId));
+	    }
         } catch (Exception ex) {
             out.println(ex.getMessage());
         } finally {
-	    response.sendRedirect("question_list.jsp?topic=" + Integer.toString(topicId));
             out.close();	    
         }
     }
