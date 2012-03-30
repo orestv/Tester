@@ -14,22 +14,54 @@
 	response.sendRedirect("admin.jsp");
 	return;
     }
-    
+
     int testId = Integer.parseInt(request.getParameter("id"));
-    
+
     Connection cn = dbutils.DBUtils.conn();
-    
-    
-    cn.close();
-    
+    PreparedStatement stTest = cn.prepareStatement("SELECT name FROM test WHERE id = ?;");
+    ResultSet rsTest = stTest.executeQuery();
+    rsTest.next();
+    String sTestName = rsTest.getString("name");
+    rsTest.close();
+    stTest.close();
+
+    PreparedStatement stStudents = cn.prepareStatement("SELECT t.id, t.name, t.questionCount AS maxResult, "
+	    + "MAX(ta.result) AS result, s.id, s.firstname, s.lastname "
+	    + "FROM test t "
+	    + "LEFT OUTER JOIN test_attempt ta ON t.id = ta.test_id AND t.id = ? "
+	    + "RIGHT OUTER JOIN student s ON ta.student_id = s.id "
+	    + "GROUP BY t.id, s.id ORDER BY s.lastname, s.firstname;");
+    stStudents.setInt(1, testId);
+    ResultSet rsStudents = stStudents.executeQuery();
+
 %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Результати тесту <%= sTestName%></title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+	<table>
+	    <tr>
+		<th>Студент</th>
+		<th>Кращий результат</th>
+	    </tr>
+	    <%
+		while (rsStudents.next()) {
+	    %>
+	    <tr>
+		<td><%= rsStudents.getString("firstname") + rsStudents.getString("lastname") %></td>
+		<td><%= rsStudents.getFloat("result") %> / <%= rsStudents.getInt("maxResult") %></td>
+	    </tr>
+	    <%			}
+	    %>
+	</table>
     </body>
 </html>
+<%
+
+    rsStudents.close();
+    stStudents.close();
+    cn.close();
+%>

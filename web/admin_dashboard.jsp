@@ -157,7 +157,7 @@
 		    for (Test t : tests) {%>
 		<tr>
 		    <td>
-			<%= t.getName()%>
+			<a href="results_test.jsp?id=<%= t.getId() %>"><%= t.getName()%></a>
 		    </td>
 		    <td>
 			<ul>
