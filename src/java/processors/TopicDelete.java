@@ -39,8 +39,11 @@ public class TopicDelete extends HttpServlet {
 	try {
 	    int id = Integer.parseInt(request.getParameter("id"));
 	    Connection cn = dbutils.DBUtils.conn();
-	    PreparedStatement st = cn.prepareStatement("DELETE FROM topic "
-		    + "WHERE id = ?");
+	    PreparedStatement st = cn.prepareStatement("DELETE t "
+		    + "FROM topic t "
+		    + "LEFT OUTER JOIN question q ON q.topic_id = t.id "
+		    + "LEFT OUTER JOIN answer a ON a.question_id = q.id "
+		    + "WHERE t.id = ?");
 	    st.setInt(1, id);
 	    st.executeUpdate();
 	    st.close();
