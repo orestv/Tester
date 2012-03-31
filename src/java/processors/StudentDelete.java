@@ -8,6 +8,7 @@ import Data.Admin;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,10 +41,25 @@ public class StudentDelete extends HttpServlet {
 	    Admin admin = (Admin)session.getAttribute("admin");
 	    if (!admin.isLoggedIn())
 		throw new Exception("You are not logged in!");
-	} catch (Exception ex) {
+	    int studentId = Integer.parseInt(request.getParameter("id"));
+	    cn = dbutils.DBUtils.conn();
 	    
-	} finally {	    
+	    PreparedStatement st = cn.prepareStatement("DELETE FROM student "
+		    + "WHERE id = ?;");
+	    st.setInt(1, studentId);
+	    st.executeUpdate();
+	    st = cn.prepareStatement("DELETE FROM test_attempt WHERE student_id = ?;");
+	    st.setInt(1, studentId);
+	    st.executeUpdate();
+	    st = cn.prepareStatement("DELETE FROM student_answer WHERE student_id = ?");
+	    st.setInt(1, studentId);
+	    st.executeUpdate();
+	    st.close();	    
+	    cn.close();
 	    response.sendRedirect("admin_dashboard.jsp");
+	} catch (Exception ex) {
+	    out.write(ex.getMessage());
+	} finally {
 	    out.close();
 	}
     }

@@ -4,7 +4,6 @@
  */
 package processors;
 
-import com.sun.jndi.cosnaming.CNCtx;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
