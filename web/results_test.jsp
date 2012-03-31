@@ -60,7 +60,7 @@
 		    <td><%= rsStudents.getString("firstname") + " " + rsStudents.getString("lastname")%></td>
 		    <td><%= rsStudents.getBoolean("tried")
 			    ? String.format("%.1f/%d", rsStudents.getFloat("result"), rsStudents.getInt("maxResult"))
-			    : "N/A"%></td>
+			    : "-"%></td>
 		</tr>
 		<%			}
 		%>
