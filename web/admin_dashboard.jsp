@@ -118,10 +118,11 @@
 	    LinkedList<Test> tests = new LinkedList<Test>();
 	    Statement stTests = cn.createStatement();
 	    ResultSet rsTests = stTests.executeQuery("SELECT test.id AS test_id, "
-		    + "test.name AS test_name, topic.id AS topic_id, topic.name AS topic_name "
+		    + "test.name AS test_name, test.final AS final, "
+		    + "topic.id AS topic_id, topic.name AS topic_name "
 		    + "FROM test "
-		    + "INNER JOIN test_topics tt ON test.id = tt.test_id "
-		    + "INNER JOIN topic ON topic.id = tt.topic_id;");
+		    + "LEFT OUTER JOIN test_topics tt ON test.id = tt.test_id "
+		    + "LEFT OUTER JOIN topic ON topic.id = tt.topic_id;");
 
 	    int tid_old = -1;
 	    Test test = null;
@@ -132,12 +133,15 @@
 			tests.add(test);
 		    }
 		    String testName = rsTests.getString("test_name");
-		    test = new Test(testId, testName);
+		    boolean isFinal = rsTests.getBoolean("final");
+		    test = new Test(testId, testName, isFinal);
 		    tid_old = testId;
 		}
-		int topicId = rsTests.getInt("topic_id");
 		String topicName = rsTests.getString("topic_name");
-		test.getTopics().add(new Topic(topicId, topicName));
+		if (topicName != null) {
+		    int topicId = rsTests.getInt("topic_id");
+		    test.getTopics().add(new Topic(topicId, topicName));
+		}
 	    }
 	    if (test != null) {
 		tests.add(test);
@@ -151,13 +155,17 @@
 	    <table>
 		<tr>
 		    <th>Назва</th>
+		    <th>Тип</th>
 		    <th>Теми</th>
 		</tr>
 		<%
 		    for (Test t : tests) {%>
 		<tr>
 		    <td>
-			<a href="results_test.jsp?id=<%= t.getId() %>"><%= t.getName()%></a>
+			<a href="results_test.jsp?id=<%= t.getId()%>"><%= t.getName()%></a>
+		    </td>
+		    <td>
+			<%= t.isFinal() ? "Контрольний" : "Пробний" %>
 		    </td>
 		    <td>
 			<ul>
@@ -203,7 +211,7 @@
 			    <%= rsStudents.getString("firstname")%> 
 			</td>
 			<td>
-			    <a href="StudentDelete?id=<%= rsStudents.getInt("id") %>"><img src="images/delete.ico"/></a>
+			    <a href="StudentDelete?id=<%= rsStudents.getInt("id")%>"><img src="images/delete.ico"/></a>
 			</td>
 		    </tr>
 		    <% }%>

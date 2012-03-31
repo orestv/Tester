@@ -14,13 +14,22 @@ public class Test {
     private LinkedList<Topic> topics;
     private int id;
     private String name;
+    private boolean isFinal;
 
-    public Test(int id, String name) {
+    public Test(int id, String name, boolean isFinal) {
 	this.id = id;
 	this.name = name;
+	this.isFinal = isFinal;
     }
     
-
+    public boolean isFinal(){
+	return isFinal;
+    }
+    
+    public void setFinal(boolean isFinal) {
+	this.isFinal = isFinal;
+    }
+    
     public int getId() {
 	return id;
     }
