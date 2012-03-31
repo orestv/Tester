@@ -17,6 +17,7 @@
 <jsp:setProperty name="testAttempt" property="*"/>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
+
 int testId = Integer.parseInt(request.getParameter("t"));
 Connection cn = DBUtils.conn();
 String sQuery = "SELECT question_id FROM question_sequence qs "
