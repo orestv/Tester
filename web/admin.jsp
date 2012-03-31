@@ -22,9 +22,11 @@ if (Admin.isPasswordValid(password)){
         <title>Вхід адміністратора</title>
     </head>
     <body>
-        <form action="admin.jsp" method="POST">
-            Введіть пароль: <input type="password" name="pwd" value=""/>
-            <input type="submit" value="Вхід"/>
-        </form>
+	<div style="width: 30%;margin: auto;margin-top: 15%;">
+	    <form action="admin.jsp" method="POST">
+		Введіть пароль: <input type="password" name="pwd" value=""/>
+		<input type="submit" value="Вхід"/>
+	    </form>
+	</div>
     </body>
 </html>
