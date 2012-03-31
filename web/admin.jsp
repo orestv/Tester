@@ -24,7 +24,7 @@ if (Admin.isPasswordValid(password)){
     <body>
 	<div style="width: 30%;margin: auto;margin-top: 15%;">
 	    <form action="admin.jsp" method="POST">
-		Введіть пароль: <input type="password" name="pwd" value=""/>
+		Введіть пароль: <input type="password" name="pwd" autofocus/>
 		<input type="submit" value="Вхід"/>
 	    </form>
 	</div>
