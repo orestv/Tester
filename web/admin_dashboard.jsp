@@ -211,7 +211,7 @@
 			    <%= rsStudents.getString("firstname")%> 
 			</td>
 			<td>
-			    <a href="StudentDelete?id=<%= rsStudents.getInt("id")%>" onclick="return alert('Ви впевнені, що хочете видалити цього студента та його результати тестувань?')">
+			    <a href="StudentDelete?id=<%= rsStudents.getInt("id")%>" onclick="return confirm('Ви впевнені, що хочете видалити цього студента та його результати тестувань?')">
 				<img src="images/delete.ico"/>
 			    </a>
 			</td>
